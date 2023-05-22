@@ -1,0 +1,7 @@
+{
+  "name": "retrieveUsers",
+  "version": "1.0.0",
+  "dependencies": {
+    "mongodb": "^5.5.0"
+  }
+}

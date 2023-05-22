@@ -2,6 +2,7 @@
   "name": "updateElo",
   "version": "1.0.0",
   "dependencies": {
-    "elo-rank" : "latest"
+    "elo-rank": "latest",
+    "mongodb": "^5.5.0"
   }
 }
