@@ -1,0 +1,7 @@
+{
+  "name": "updateElo",
+  "version": "1.0.0",
+  "dependencies": {
+    "elo-rank" : "latest"
+  }
+}
