@@ -1,30 +1,45 @@
-const { MongoClient } = require("mongodb");
+// Import the MongoDB driver
+const MongoClient = require("mongodb").MongoClient;
  
-// Replace the following with your Atlas connection string                                                                                                                                        
-const url = "secret";
-const client = new MongoClient(url);
- 
- // The database to use
- const dbName = "felo";
-                      
- async function run() {
-    try {
-         await client.connect();
-         console.log("Connected correctly to server");
-         const db = client.db(dbName);
-         const col = db.collection("users");
-         let userDocument = {
-             "username": "insertTest",
-             "elo": 1000
-         }
-         await col.insertOne(userDocument);
+// Define our connection string. Info on where to get this will be described below. In a real world application you'd want to get this string from a key vault like AWS Key Management, but for brevity, we'll hardcode it in our serverless function here.
+const MONGODB_URI = "secret";
 
-        } catch (err) {
-         console.log(err.stack);
-     }
- 
-     finally {
-        await client.close();
-    }
+// Once we connect to the database once, we'll store that connection and reuse it so that we don't have to connect to the database on every request.
+let cachedDb = null;
+
+async function connectToDatabase() {
+  if (cachedDb) {
+    return cachedDb;
+  }
+
+  // Connect to our MongoDB database hosted on MongoDB Atlas
+  const client = await MongoClient.connect(MONGODB_URI);
+
+  // Specify which database we want to use
+  const db = await client.db("felo");
+
+  cachedDb = db;
+  return db;
 }
-run().catch(console.dir);
+     
+exports.handler = async (event, context) => {
+
+  /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
+  context.callbackWaitsForEmptyEventLoop = false;
+
+  const db = await connectToDatabase();
+
+  await db.collection("users").insertOne(event)
+
+  const users = await db.collection("users")
+      .find({})
+      .sort({elo: -1})
+      .toArray();
+
+  const response = {
+      statusCode: 200,
+      body: JSON.stringify(users),
+  };
+
+  return response;
+}
