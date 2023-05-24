@@ -29,26 +29,26 @@ function RegisterUser({setUserArray, setShowRegister}) {
     }
 
     return (
-      <div>
-        <h2>Register User</h2>
-        <form onSubmit={handleSubmit}>
-            <label>Username: <br />
-                <input
-                    name="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => handleUsernameChange(e)}
-                    maxLength={20}
-                />
-            </label>
-
-            <input
-                className="submit"
-                type="button"
-                onClick={handleSubmit}
-                value="Submit"
-            />
-        </form>
+      <div className="modal-card">
+        <header className="modal-card-head">
+          <p class="modal-card-title">Register User</p>
+        </header>
+        <section className="modal-card-body">
+          <form onSubmit={handleSubmit}>
+              <label>Username: <br />
+                  <input
+                      name="username"
+                      type="text"
+                      value={username}
+                      onChange={(e) => handleUsernameChange(e)}
+                      maxLength={20}
+                  />
+              </label>
+          </form>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success" onClick={handleSubmit}>Submit</button>
+        </footer>
       </div>
     );
   }

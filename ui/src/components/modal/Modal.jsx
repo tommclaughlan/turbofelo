@@ -1,16 +1,12 @@
 import './modal.css';
 
-const Modal = ({ handleClose, show, children }) => {
-  const showHideClassName = show ? "modal display-block" : "modal display-none";
+const Modal = ({ handleClose, show, children, title }) => {
+  const showHideClassName = show ? "modal is-active" : "modal";
 
   return (
     <div className={showHideClassName}>
-      <section className="modal-main">
-        {children}
-        <button type="button" onClick={handleClose}>
-          Close
-        </button>
-      </section>
+      <div className='modal-background' onClick={handleClose}/>
+      {children}
     </div>
   );
 };
