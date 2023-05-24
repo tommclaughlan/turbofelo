@@ -1,26 +1,52 @@
 // Import the MongoDB driver
 const MongoClient = require("mongodb").MongoClient;
  
-// Define our connection string. Info on where to get this will be described below. In a real world application you'd want to get this string from a key vault like AWS Key Management, but for brevity, we'll hardcode it in our serverless function here.
+// Replace the following with your Atlas connection string                                                                                                                                        
 const MONGODB_URI = "secret";
+ 
+// The database to use
+const dbName = "felo";
 
-// Once we connect to the database once, we'll store that connection and reuse it so that we don't have to connect to the database on every request.
+let cachedClient = null;
 let cachedDb = null;
 
-async function connectToDatabase() {
-  if (cachedDb) {
-    return cachedDb;
-  }
+async function connectToClient() {
+    if (cachedClient) {
+        return cachedClient;
+    }
 
-  // Connect to our MongoDB database hosted on MongoDB Atlas
-  const client = await MongoClient.connect(MONGODB_URI);
+    // Connect to our MongoDB database hosted on MongoDB Atlas
+    const client = await MongoClient.connect(MONGODB_URI);
 
-  // Specify which database we want to use
-  const db = await client.db("felo");
+    cachedClient = client;
 
-  cachedDb = db;
-  return db;
+    return client;
 }
+
+async function connectToDatabase() {
+    if (cachedDb) {
+        return cachedDb;
+    }
+
+    const client = await connectToClient();
+
+    const db = await client.db(dbName);
+
+    cachedDb = db;
+
+    return cachedDb;
+}
+
+async function closeConnection() {
+    if (!cachedClient) {
+        return;
+    }
+
+    cachedClient.close();
+
+    cachedClient = null;
+    cachedDb = null;
+} 
      
 exports.handler = async (event, context) => {
 
@@ -40,6 +66,8 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       body: JSON.stringify(users),
   };
+
+  await closeConnection();
 
   return response;
 }
