@@ -19,7 +19,42 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray}) {
             return errors;
         },
         onSubmit: (values) => {
-            console.log(values);
+            fetch(`https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo`, {
+                mode: "cors",
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify(
+                    {
+                        "teams": [
+                          {
+                            "players": [
+                              values.teamOnePlayerOne,
+                              values.teamOnePlayerTwo
+                            ],
+                            "score": values.teamOneScore,
+                          },
+                          {
+                            "players": [
+                                values.teamTwoPlayerOne,
+                                values.teamTwoPlayerTwo
+                            ],
+                            "score": values.teamTwoScore,
+                          }
+                        ]
+                      }
+                  )
+            }).then(res => res.json())
+            .then(
+              (result) => {
+                setUserArray(result)
+                setShowSubmitScore(false)
+              },
+              (error) => {
+                console.log(error)
+              }
+            );
         },
     })
 

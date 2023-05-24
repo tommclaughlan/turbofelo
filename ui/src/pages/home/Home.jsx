@@ -26,7 +26,7 @@ function Home() {
     return (
       <div>
         <h1>Fight me!</h1>
-        <Modal show={showSubmit} handleClose={() => setShowSubmitScore(false)} children={<SubmitScore setUserArray={setUserArray} setShowSubmitScores={setShowSubmitScore} userArray={userArray}/>} />
+        <Modal show={showSubmit} handleClose={() => setShowSubmitScore(false)} children={<SubmitScore setUserArray={setUserArray} setShowSubmitScore={setShowSubmitScore} userArray={userArray}/>} />
         <button type="button" onClick={() => setShowSubmitScore(true)} className="submitScoreButton">
           Submit Score
         </button>

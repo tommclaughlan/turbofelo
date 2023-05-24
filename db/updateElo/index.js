@@ -112,7 +112,9 @@ const calculateElos = (teams) => {
     return newElos;
 }
 
-async function mockLambdaCall(event) {
+exports.handler = async (event, context) => {
+
+    context.callbackWaitsForEmptyEventLoop = false;
     const usernames = event.teams.flatMap(team => team.players);
     const dbPlayers = await retrievePlayerDictionaryFromDB(usernames);
 
@@ -127,21 +129,18 @@ async function mockLambdaCall(event) {
 
     await saveGame(event);
 
+    const db = await connectToDatabase();
+    const users = await db.collection("users")
+    .find({})
+    .sort({elo: -1})
+    .toArray();
+
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify(users),
+    };
+
     await closeConnection();
+
+    return response;
 }
-
-
-input = {
-    "teams": [
-        {
-            "players": ["test1", "test2"],
-            "score": 10
-        },
-        {
-            "players": ["test3", "insertTest"],
-            "score": 7
-        }
-    ]
-};
-
-mockLambdaCall(input);

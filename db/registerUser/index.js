@@ -55,7 +55,7 @@ exports.handler = async (event, context) => {
 
   const db = await connectToDatabase();
 
-  await db.collection("users").insertOne(event)
+  await db.collection("users").insertOne(JSON.parse(event.body))
 
   const users = await db.collection("users")
       .find({})

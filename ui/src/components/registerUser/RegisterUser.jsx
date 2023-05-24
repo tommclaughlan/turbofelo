@@ -38,7 +38,7 @@ function RegisterUser({setUserArray, setShowRegister}) {
                     type="text"
                     value={username}
                     onChange={(e) => handleUsernameChange(e)}
-                    maxLength={10}
+                    maxLength={20}
                 />
             </label>
 
