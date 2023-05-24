@@ -1,40 +1,14 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
 
 .App {
-  text-align: center;
-  background-color: #282c34;
-  color: white;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  font-size: calc(10px + 2vmin);
-}
-
-button {
-  background-color: white; /* Green */
-  border: none;
-  color: #282c34;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
+  font-size: calc(10px + 1vmin);
 }
 
 .submit {
   background-color: red;
-}
-
-.registerButton {
-  float: right;
-  margin-right: 5%;
-  margin-bottom: 2%;
-}
-
-.submitScoreButton {
-  float: left;
-  margin-left: 5%;
-  margin-bottom: 2%;
 }
 
 

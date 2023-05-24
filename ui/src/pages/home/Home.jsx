@@ -3,6 +3,11 @@ import Scoreboard from "../../components/scoreboard/Scoreboard";
 import Modal from "../../components/modal/Modal";
 import RegisterUser from "../../components/registerUser/RegisterUser";
 import SubmitScore from "../../components/submitScore/SubmitScore";
+import { QOUTES } from "./constants";
+
+import './Home.css';
+
+const randomQoute = QOUTES[Math.floor(Math.random()*QOUTES.length)];
 
 function Home() {
 
@@ -24,18 +29,38 @@ function Home() {
     }, [])
 
     return (
-      <div>
-        <h1>Fight me!</h1>
-        <Modal show={showSubmit} handleClose={() => setShowSubmitScore(false)} children={<SubmitScore setUserArray={setUserArray} setShowSubmitScore={setShowSubmitScore} userArray={userArray}/>} />
-        <button type="button" onClick={() => setShowSubmitScore(true)} className="submitScoreButton">
-          Submit Score
-        </button>
+      <>
         <Modal show={showRegister} handleClose={() => setShowRegister(false)} children={<RegisterUser setUserArray={setUserArray} setShowRegister={setShowRegister}/>} />
-        <button type="button" onClick={() => setShowRegister(true)} className="registerButton">
-          Register Users
-        </button>
-        <Scoreboard userArray={userArray} />
-      </div>
+        <Modal show={showSubmit} handleClose={() => setShowSubmitScore(false)} children={<SubmitScore setUserArray={setUserArray} setShowSubmitScore={setShowSubmitScore} userArray={userArray}/>} />
+        <div className="hero is-small is-primary">
+          <div className="hero-body has-text-centered">
+            <p className="title">Turbo Felo</p>
+            <p className="subtitle">Turbo's Table Football Elo Extravaganza</p>
+            <p className="is-size-7">{randomQoute}</p>
+          </div>
+        </div>
+        <div className="container page-body">
+          <div className="section action-buttons">
+            <div className="level is-mobile">
+              <div className="level-left">
+                <div className="level-item">
+                  <button className="button is-info is-medium" type="button" onClick={() => setShowSubmitScore(true)}>
+                    Submit Score
+                  </button>
+                </div>
+              </div>
+              <div className="level-right">
+                <div className="level-item">
+                  <button className="button is-info is-medium" type="button" onClick={() => setShowRegister(true)}>
+                    Register User
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <Scoreboard userArray={userArray} />
+        </div>
+      </>
     );
   }
   
