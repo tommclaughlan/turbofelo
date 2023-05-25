@@ -35,15 +35,19 @@ function RegisterUser({setUserArray, setShowRegister}) {
         </header>
         <section className="modal-card-body">
           <form onSubmit={handleSubmit}>
-              <label>Username: <br />
+            <div className="field">
+              <label className="label">Username</label>
+              <div className="control">
                   <input
+                    className="input"
                       name="username"
                       type="text"
                       value={username}
                       onChange={(e) => handleUsernameChange(e)}
                       maxLength={20}
                   />
-              </label>
+              </div>
+            </div>
           </form>
         </section>
         <footer class="modal-card-foot">

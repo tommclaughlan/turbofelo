@@ -84,55 +84,96 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray}) {
         <section className="modal-card-body">
             <form>
                 <div className="columns">
-                    <div className="column">
-                        <label htmlFor="teamOneScore">Team One: </label>
-                        <input
-                            id="teamOneScore"
-                            name="teamOneScore"
-                            type="number"
-                            max={10}
-                            onChange={formik.handleChange}
-                            value={formik.values.teamOneScore}
-                        />
-                        <br />
-                        <label htmlFor="teamOnePlayerOne">One: </label>
-                        <div className="dropdown">
-                            <Select options={formatOptions(userArray)}
-                            onChange={(selected) => {formik.setFieldValue("teamOnePlayerOne", selected.value)}}
-                                />
-                        </div>
-                        <br />
-                        <label htmlFor="teamOnePlayerTwo">Two: </label>
-                        <div className="dropdown">
-                            <Select options={formatOptions(userArray)}
-                            onChange={(selected) => {formik.setFieldValue("teamOnePlayerTwo", selected.value)}}
-                                />
+                    <div className="column column-score">
+                        <div className="field is-grouped">
+                            <div className="team-title">
+                                <label className="label" htmlFor="teamOneScore">Team One</label>
+                            </div>
+                            <input
+                                className="input"
+                                id="teamOneScore"
+                                name="teamOneScore"
+                                type="number"
+                                max={10}
+                                min={0}
+                                onChange={formik.handleChange}
+                                value={formik.values.teamOneScore}
+                            />
                         </div>
                     </div>
-
-                    <div className="column">
-                        <label htmlFor="teamTwoScore">Team Two: </label>
-                        <input
-                            id="teamTwoScore"
-                            name="teamTwoScore"
-                            type="number"
-                            max={10}
-                            onChange={formik.handleChange}
-                            value={formik.values.teamTwoScore}
-                        />
-                        <br />
-                        <label htmlFor="teamTwoPlayerOne">One: </label>
-                        <div className="dropdown">
-                            <Select options={formatOptions(userArray)}
-                            onChange={(selected) => {formik.setFieldValue("teamTwoPlayerOne", selected.value)}}
-                                />
+                    <div className="column column-dash">
+                        <p className="has-text-centered">-</p>
+                    </div>
+                    <div className="column column-score">
+                        <div className="field is-grouped">
+                            <input
+                                className="input  has-text-right"
+                                id="teamTwoScore"
+                                name="teamTwoScore"
+                                type="number"
+                                max={10}
+                                min={0}
+                                onChange={formik.handleChange}
+                                value={formik.values.teamTwoScore}
+                            />
+                            <div className="team-title">
+                                <label className="label has-text-right" htmlFor="teamTwoScore">Team Two</label>                            
+                            </div>
                         </div>
-                        <br />
-                        <label htmlFor="teamOnePlayerTwo">Two: </label>
-                        <div className="dropdown">
-                            <Select options={formatOptions(userArray)}
-                            onChange={(selected) => {formik.setFieldValue("teamTwoPlayerTwo", selected.value)}}
-                                />
+                    </div>
+                </div>
+
+                <div className="columns">
+                    <div className="column">
+                        <div className="field">
+                            <Select
+                                className="player-select"
+                                placeholder="Player One"
+                                classNames={{
+                                    menuPortal: (state) => 'select-menu',
+                                }}
+                                menuPortalTarget={document.body}
+                                options={formatOptions(userArray)}
+                                onChange={(selected) => {formik.setFieldValue("teamOnePlayerOne", selected.value)}}
+                            />
+                        </div>
+                        <div className="field">                       
+                            <Select 
+                                className="player-select"
+                                placeholder="Player Two"
+                                classNames={{
+                                    menuPortal: (state) => 'select-menu',
+                                }}
+                                menuPortalTarget={document.body}
+                                options={formatOptions(userArray)}
+                                onChange={(selected) => {formik.setFieldValue("teamOnePlayerTwo", selected.value)}}
+                            />
+                        </div>
+                    </div>
+                    <div className="column has-text-right">
+                        <div className="field">                    
+                            <Select
+                                className="player-select"
+                                placeholder="Player One"
+                                classNames={{
+                                    menuPortal: (state) => 'select-menu',
+                                }}
+                                menuPortalTarget={document.body}
+                                options={formatOptions(userArray)}
+                                onChange={(selected) => {formik.setFieldValue("teamTwoPlayerOne", selected.value)}}
+                            />
+                        </div>
+                        <div className="field select-menu">                        
+                            <Select
+                                className="player-select"
+                                placeholder="Player Two"
+                                classNames={{
+                                    menuPortal: (state) => 'select-menu',
+                                }}
+                                menuPortalTarget={document.body}
+                                options={formatOptions(userArray)}
+                                onChange={(selected) => {formik.setFieldValue("teamTwoPlayerTwo", selected.value)}}
+                            />
                         </div>
                     </div>
                 </div>
