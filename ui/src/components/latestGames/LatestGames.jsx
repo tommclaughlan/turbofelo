@@ -1,5 +1,5 @@
 import './latestGames.css';
-
+import Carousel from '../carousel/Carousel'
 
 const LatestGames = ({gamesArray}) => {
 
@@ -17,14 +17,9 @@ const LatestGames = ({gamesArray}) => {
 
     const renderGames = () => {
 
-        console.log(gamesArray)
         if (gamesArray) {
             const games = gamesArray.map(
                 (elem, index, array) => {
-                    console.log(elem)
-                    let gameText = renderPlayers(elem.teams[0]) + " " + elem.teams[0].score + " - " + elem.teams[1].score + " " + renderPlayers(elem.teams[1]);
-
-    
                     return(
                         <div className='columns'>
                             <div className='column'>
@@ -48,10 +43,14 @@ const LatestGames = ({gamesArray}) => {
 
     <article className="message is-danger games-box">
     <div className="message-header">
-        <p>Latest Game</p>
+        <p>Latest Games</p>
     </div>
     <div className="message-body">
-        {renderGames()}
+        {gamesArray !== null ?
+        <Carousel items={renderGames()}/>
+        :
+        <p>Loading...</p>
+        }
     </div>
     </article>
   );

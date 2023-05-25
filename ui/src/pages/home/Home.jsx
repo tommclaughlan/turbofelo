@@ -56,7 +56,7 @@ function Home() {
         <div className="container page-body">
           <div className="section action-buttons">
             <div className="level is-mobile">
-              <div className="level-left">
+              <div className="level">
                 <div className="level-item">
                   <button className="button is-info is-medium" type="button" onClick={() => setShowSubmitScore(true)}>
                     Submit Score
@@ -64,11 +64,11 @@ function Home() {
                 </div>
               </div>
               <div className="level is-mobile">
-                <div className="level-item">
-                  <LatestGames gamesArray={gamesArray} />
+                  <div className="level-item">
+                    <LatestGames gamesArray={gamesArray} />
+                  </div>
                 </div>
-              </div>
-              <div className="level-right">
+              <div className="level">
                 <div className="level-item">
                   <button className="button is-info is-medium" type="button" onClick={() => setShowRegister(true)}>
                     Register User
