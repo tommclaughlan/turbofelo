@@ -31,7 +31,7 @@ function RegisterUser({setUserArray, setShowRegister}) {
     return (
       <div className="modal-card">
         <header className="modal-card-head">
-          <p class="modal-card-title">Register User</p>
+          <p className="modal-card-title">Register User</p>
         </header>
         <section className="modal-card-body">
           <form onSubmit={handleSubmit}>
@@ -50,8 +50,8 @@ function RegisterUser({setUserArray, setShowRegister}) {
             </div>
           </form>
         </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" onClick={handleSubmit}>Submit</button>
+        <footer className="modal-card-foot">
+          <button className="button is-success" onClick={handleSubmit}>Submit</button>
         </footer>
       </div>
     );
