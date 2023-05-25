@@ -3,7 +3,7 @@ import Select from "react-select";
 import "./submitScore.css"
 
 
-function SubmitScore({setUserArray, setShowSubmitScore, userArray}) {
+function SubmitScore({setUserArray, setShowSubmitScore, userArray, setGamesArray}) {
 
     const formik = useFormik({
         initialValues: {
@@ -48,7 +48,8 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray}) {
             }).then(res => res.json())
             .then(
               (result) => {
-                setUserArray(result)
+                setUserArray(result.users)
+                setGamesArray(result.game)
                 setShowSubmitScore(false)
               },
               (error) => {
@@ -79,7 +80,7 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray}) {
     return (
         <div className="modal-card">
         <header className="modal-card-head">
-          <p class="modal-card-title">Submit Score</p>
+          <p className="modal-card-title">Submit Score</p>
         </header>
         <section className="modal-card-body">
             <form>
@@ -138,8 +139,8 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray}) {
                 </div>
             </form>
         </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success" onClick={formik.handleSubmit}>Submit</button>
+        <footer className="modal-card-foot">
+          <button className="button is-success" onClick={formik.handleSubmit}>Submit</button>
         </footer>
       </div>
     );
