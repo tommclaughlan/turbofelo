@@ -9,23 +9,25 @@ function RegisterUser({setUserArray, setShowRegister}) {
     }
 
     const handleSubmit = async (event) => {
-        fetch(`https://fsjps0x3s4.execute-api.eu-north-1.amazonaws.com/default/registerUser`, {
-            mode: "cors",
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json'
-              },
-              body: JSON.stringify({"username": username, "elo": 1000})
-        }).then(res => res.json())
-        .then(
-          (result) => {
-            setUserArray(result)
-            setShowRegister(false)
-          },
-          (error) => {
-            console.log(error)
-          }
-        );
+        if (username !== ''){
+          fetch(`https://fsjps0x3s4.execute-api.eu-north-1.amazonaws.com/default/registerUser`, {
+              mode: "cors",
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json'
+                },
+                body: JSON.stringify({"username": username, "elo": 1000})
+          }).then(res => res.json())
+          .then(
+            (result) => {
+              setUserArray(result)
+              setShowRegister(false)
+            },
+            (error) => {
+              console.log(error)
+            }
+          );
+        }
     }
 
     return (

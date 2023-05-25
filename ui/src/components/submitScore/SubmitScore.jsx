@@ -16,6 +16,13 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray, setGamesArray
         },
         validate: (values) => {
             const errors = {};
+            if (values.teamOneScore !== 10 && values.teamTwoScore !== 10) {
+                errors.score = "One score must be 10!"
+            }
+            const players = new Set([values.teamOnePlayerOne, values.teamOnePlayerTwo, values.teamTwoPlayerOne, values.teamTwoPlayerTwo])
+            if (players.size !== 4) {
+                errors.players = "All players must be filled in with no duplicates"
+            }
             return errors;
         },
         onSubmit: (values) => {
@@ -123,7 +130,7 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray, setGamesArray
                         </div>
                     </div>
                 </div>
-
+                {formik.errors.score ? <div className="has-text-centered has-text-danger">{formik.errors.score}</div> : null}
                 <div className="columns">
                     <div className="column">
                         <div className="field">
@@ -178,6 +185,7 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray, setGamesArray
                         </div>
                     </div>
                 </div>
+                {formik.errors.players ? <div className="has-text-centered has-text-danger">{formik.errors.players}</div> : null}
             </form>
         </section>
         <footer className="modal-card-foot">

@@ -3,7 +3,7 @@ import "./carousel.css"
 
 const Carousel = ({items}) => {
   const [index, setIndex] = useState(0); 
-  const length = 3;
+  const length = items.length;
 
   const handlePrevious = () => {
       const newIndex = index - 1;

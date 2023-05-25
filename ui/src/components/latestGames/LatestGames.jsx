@@ -20,18 +20,23 @@ const LatestGames = ({gamesArray}) => {
         if (gamesArray) {
             const games = gamesArray.map(
                 (elem, index, array) => {
+                    const datePlayed = new Date(parseInt(elem._id.substring(0,8), 16) *1000)
                     return(
-                        <div className='columns'>
-                            <div className='column'>
-                                {renderPlayers(elem.teams[0])}
+                        <div>
+                            <div className='columns'>
+                                <div className='column'>
+                                    {renderPlayers(elem.teams[0])}
+                                </div>
+                                <div className='column is-one-fifth'>
+                                    {elem.teams[0].score + " - " + elem.teams[1].score}
+                                </div>
+                                <div className='column'>
+                                    {renderPlayers(elem.teams[1])}
+                                </div>
                             </div>
-                            <div className='column is-one-fifth'>
-                                {elem.teams[0].score + " - " + elem.teams[1].score}
-                            </div>
-                            <div className='column'>
-                                {renderPlayers(elem.teams[1])}
-                            </div>
+                            <p className='has-text-centered'>Played at: {datePlayed.toLocaleTimeString('en-UK') + " " +  datePlayed.toLocaleDateString('en-UK')}</p>
                         </div>
+
                     )
                 }
             )
