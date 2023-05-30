@@ -1,9 +1,12 @@
 import {useFormik} from "formik";
 import Select from "react-select";
 import "./submitMultiScore.css"
+import { useState } from "react";
 
 
 function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, setGamesArray}) {
+
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -36,6 +39,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
             return errors;
         },
         onSubmit: async (values) => {
+            setSubmitDisabled(true);
             const games = [];
             games.push({
                 "teams": [
@@ -95,6 +99,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
             for (let game of games) {
                 await submitResult(game);
             }
+            setSubmitDisabled(false)
             setShowSubmitMultiScore(false)
 
 
@@ -142,7 +147,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
     return (
         <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Submit 3 Scores (Please don't spam submit)</p>
+          <p className="modal-card-title">Submit 3 Scores</p>
         </header>
         <section className="modal-card-body">
             <form>
@@ -325,7 +330,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
             </form>
         </section>
         <footer className="modal-card-foot">
-            <button className="button is-success" onClick={formik.handleSubmit}>Submit</button>
+            <button className="button is-success" onClick={formik.handleSubmit} disabled={submitDisabled}>Submit</button>
         </footer>
       </div>
     );

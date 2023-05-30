@@ -3,14 +3,16 @@ import { useState } from "react";
 function RegisterUser({setUserArray, setShowRegister}) {
 
     const [username, setUsername] = useState('');
+    const [submitDisabled, setSubmitDisabled] = useState(false);
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value)
     }
 
     const handleSubmit = async (event) => {
+        setSubmitDisabled(true);
         if (username !== ''){
-          fetch(`https://fsjps0x3s4.execute-api.eu-north-1.amazonaws.com/default/registerUser`, {
+          await fetch(`https://fsjps0x3s4.execute-api.eu-north-1.amazonaws.com/default/registerUser`, {
               mode: "cors",
               method: 'POST',
               headers: {
@@ -28,6 +30,7 @@ function RegisterUser({setUserArray, setShowRegister}) {
             }
           );
         }
+        setSubmitDisabled(false)
     }
 
     return (
@@ -53,7 +56,7 @@ function RegisterUser({setUserArray, setShowRegister}) {
           </form>
         </section>
         <footer className="modal-card-foot">
-          <button className="button is-success" onClick={handleSubmit}>Submit</button>
+          <button className="button is-success" onClick={handleSubmit} disabled={submitDisabled}>Submit</button>
         </footer>
       </div>
     );
