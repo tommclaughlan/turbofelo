@@ -6,3 +6,9 @@
     padding-left: 0;
     padding-right: 0;
 }
+
+.action-button {
+    display: block;
+    width: 100%;
+    margin-bottom: 2%;
+}

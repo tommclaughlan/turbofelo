@@ -26,3 +26,7 @@
 .select-menu {
     z-index: 50 !important;
 }
+
+.submit-bar {
+    width: 100%
+}

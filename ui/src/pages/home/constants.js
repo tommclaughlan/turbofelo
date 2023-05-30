@@ -23,5 +23,20 @@ export const QOUTES = [
     "Street Footer",
     "Super Street Fooghter II Turbo HD Remix Edition",
     "Confoosing",
-    "There will be LLL to pay"
+    "There will be LLL to pay",
+    "Some will win, some will foos",
+    "Some just wanna sing the foos",
+    "Foos Brothers",
+    "mvn-clean-instfoos",
+    "Speed 2: Foos Control",
+    "Have I got Foos For You",
+    "Huey Lewis and the Foos",
+    "Foos your own adventure",
+    "The Bad Foos Bears",
+    "Goody two-foos",
+    "Rhythm and foos",
+    "Santa only gave me the Foos",
+    "Not optimized for mobile",
+    "How to Foos a Ball in 10 Days",
+    "Pokémon The Movie: I Foos You!"
 ]

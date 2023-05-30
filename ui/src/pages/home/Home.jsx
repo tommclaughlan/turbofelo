@@ -3,6 +3,7 @@ import Scoreboard from "../../components/scoreboard/Scoreboard";
 import Modal from "../../components/modal/Modal";
 import RegisterUser from "../../components/registerUser/RegisterUser";
 import SubmitScore from "../../components/submitScore/SubmitScore";
+import SubmitMultiScore from "../../components/submitMultiScore/SubmitMultiScore"
 import { QOUTES } from "./constants";
 
 import './Home.css';
@@ -14,6 +15,7 @@ function Home() {
 
     const [showRegister, setShowRegister] = useState(false);
     const [showSubmit, setShowSubmitScore] = useState(false);
+    const [showSubmitMulti, setShowSubmitMultiScore] = useState(false);
     const [userArray, setUserArray] = useState(null);
     const [gamesArray, setGamesArray] = useState(null);
 
@@ -47,6 +49,7 @@ function Home() {
       <>
         <Modal show={showRegister} handleClose={() => setShowRegister(false)} children={<RegisterUser setUserArray={setUserArray} setShowRegister={setShowRegister}/>} />
         <Modal show={showSubmit} handleClose={() => setShowSubmitScore(false)} children={<SubmitScore setUserArray={setUserArray} setGamesArray={setGamesArray} setShowSubmitScore={setShowSubmitScore} userArray={userArray}/>} />
+        <Modal show={showSubmitMulti} handleClose={() => setShowSubmitMultiScore(false)} children={<SubmitMultiScore setUserArray={setUserArray} setGamesArray={setGamesArray} setShowSubmitMultiScore={setShowSubmitMultiScore} userArray={userArray}/>} />
         <div className="hero is-small is-primary">
           <div className="hero-body has-text-centered">
             <p className="title">{randomQoute}</p>
@@ -55,26 +58,28 @@ function Home() {
         </div>
         <div className="container page-body">
           <div className="section action-buttons">
-            <div className="level is-mobile">
-              <div className="level">
-                <div className="level-item">
-                  <button className="button is-info is-medium" type="button" onClick={() => setShowSubmitScore(true)}>
-                    Submit Score
-                  </button>
+            <div className="columns is-mobile">
+              <div className="column is-one-fifth">
+                <div>
+                    <div className="is-flex-direction-column">
+                      <button className="button is-warning is-medium action-button" type="button" onClick={() => setShowSubmitScore(true)}>
+                        Submit Score
+                      </button>
+                      <button className="button is-danger is-medium action-button" type="button" onClick={() => setShowSubmitMultiScore(true)}>
+                        Submit 3 Scores
+                      </button>
+                      <button className="button is-info is-medium action-button" type="button" onClick={() => setShowRegister(true)}>
+                        Register User
+                      </button>
+                  </div>
+
                 </div>
               </div>
-              <div className="level is-mobile">
-                  <div className="level-item">
+              <div className="column is-mobile">
+                  <div>
                     <LatestGames gamesArray={gamesArray} />
                   </div>
                 </div>
-              <div className="level">
-                <div className="level-item">
-                  <button className="button is-info is-medium" type="button" onClick={() => setShowRegister(true)}>
-                    Register User
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
           <Scoreboard userArray={userArray} />
