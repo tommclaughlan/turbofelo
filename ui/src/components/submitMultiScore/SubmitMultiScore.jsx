@@ -35,7 +35,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
             }
             return errors;
         },
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             const games = [];
             games.push({
                 "teams": [
@@ -93,29 +93,33 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
             });
 
             for (let game of games) {
-                fetch(`https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo`, {
-                    mode: "cors",
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(game)
-                }).then(res => res.json())
-                .then(
-                (result) => {
-                    setUserArray(result.users)
-                    setGamesArray(result.game)
-                },
-                (error) => {
-                    console.log(error)
-                }
-                );
+                await submitResult(game);
             }
             setShowSubmitMultiScore(false)
 
 
         },
     })
+
+    const submitResult = async (game) => {
+        await fetch(`https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo`, {
+            mode: "cors",
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(game)
+        }).then(res => res.json())
+        .then(
+        (result) => {
+            setUserArray(result.users)
+            setGamesArray(result.game)
+        },
+        (error) => {
+            console.log(error)
+        }
+        );
+    }
 
     const formatOptions = (options) => {
         if (options) {
@@ -138,7 +142,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
     return (
         <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Submit 3 Scores</p>
+          <p className="modal-card-title">Submit 3 Scores (Please don't spam submit)</p>
         </header>
         <section className="modal-card-body">
             <form>
