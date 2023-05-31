@@ -1,6 +1,7 @@
-const { MongoClient } = require("mongodb");
 const EloRank = require('elo-rank');
 const elo = new EloRank();
+// Import the MongoDB driver
+const MongoClient = require("mongodb").MongoClient;
  
 // Replace the following with your Atlas connection string                                                                                                                                        
 const MONGODB_URI = "secret";
@@ -93,8 +94,8 @@ async function retrievePlayerDictionaryFromDB(usernames) {
 
 const calculateElos = (teams) => {
     const teamElos = teams.map(team => (
-        team.players.reduce((sum, player) => sum + player.elo), 0) / team.players.length
-    );
+        team.players.reduce((sum, player) => sum + player.elo, 0) / team.players.length
+    ));
 
     const expectedScores = [
         elo.getExpected(teamElos[0], teamElos[1]),
@@ -114,30 +115,45 @@ const calculateElos = (teams) => {
 
 exports.handler = async (event, context) => {
 
+    /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
     context.callbackWaitsForEmptyEventLoop = false;
-    const usernames = event.teams.flatMap(team => team.players);
+    
+    const game = JSON.parse(event.body);
+    
+    const usernames = game.teams.flatMap(team => team.players);
     const dbPlayers = await retrievePlayerDictionaryFromDB(usernames);
 
-    const results = event.teams.map(team => ({
+    const results = game.teams.map(team => ({
         players: team.players.map(username => dbPlayers[username]),
-        verdict: team.score === 10 ? 1 : 0
+        verdict: Number(team.score) === 10 ? 1 : 0
     }));
 
     const newElos = calculateElos(results);
 
     await updateElos(newElos);
 
-    await saveGame(event);
+    await saveGame(game);
 
     const db = await connectToDatabase();
     const users = await db.collection("users")
     .find({})
     .sort({elo: -1})
     .toArray();
+    
+    const games = await db.collection("games")
+    .find({})
+    .sort({creationDate: -1})
+    .limit(3)
+    .toArray();
+
+    const responseBody = {
+        "users": users,
+        "game": games
+    }
 
     const response = {
         statusCode: 200,
-        body: JSON.stringify(users),
+        body: JSON.stringify(responseBody),
     };
 
     await closeConnection();

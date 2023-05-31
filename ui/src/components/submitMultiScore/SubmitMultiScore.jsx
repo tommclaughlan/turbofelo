@@ -147,7 +147,7 @@ function SubmitMultiScore({setUserArray, setShowSubmitMultiScore, userArray, set
     return (
         <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Submit 3 Scores</p>
+          <p className="modal-card-title">Submit 3 Scores (Just put 10-0 if you can't remember)</p>
         </header>
         <section className="modal-card-body">
             <form>

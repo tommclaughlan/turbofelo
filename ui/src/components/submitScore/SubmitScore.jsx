@@ -87,7 +87,7 @@ function SubmitScore({setUserArray, setShowSubmitScore, userArray, setGamesArray
     return (
         <div className="modal-card">
         <header className="modal-card-head">
-          <p className="modal-card-title">Submit Score</p>
+          <p className="modal-card-title">Submit Score (Just put 10-0 if you can't remember)</p>
         </header>
         <section className="modal-card-body">
             <form>
