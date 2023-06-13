@@ -47,7 +47,7 @@ function Home() {
 
     return (
       <>
-        <Modal show={showRegister} handleClose={() => setShowRegister(false)} children={<RegisterUser setUserArray={setUserArray} setShowRegister={setShowRegister}/>} />
+        <Modal show={showRegister} handleClose={() => setShowRegister(false)} children={<RegisterUser setUserArray={setUserArray} setShowRegister={setShowRegister} userArray={userArray}/>} />
         <Modal show={showSubmit} handleClose={() => setShowSubmitScore(false)} children={<SubmitScore setUserArray={setUserArray} setGamesArray={setGamesArray} setShowSubmitScore={setShowSubmitScore} userArray={userArray}/>} />
         <Modal show={showSubmitMulti} handleClose={() => setShowSubmitMultiScore(false)} children={<SubmitMultiScore setUserArray={setUserArray} setGamesArray={setGamesArray} setShowSubmitMultiScore={setShowSubmitMultiScore} userArray={userArray}/>} />
         <div className="hero is-small is-primary">
