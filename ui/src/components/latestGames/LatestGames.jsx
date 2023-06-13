@@ -7,9 +7,9 @@ const LatestGames = ({gamesArray}) => {
         let players = "";
         for (let i = 0; i < team.players.length; i++) {
             if (i > 0) {
-                players = players + " & " + team.players[i]
+                players = players + " & " + team.players[i].username
             } else {
-                players = players + team.players[i]
+                players = players + team.players[i].username
             }
         }
         return players
