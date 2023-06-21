@@ -51,7 +51,7 @@ const LatestGames = ({gamesArray}) => {
         <p>Latest Games</p>
     </div>
     <div className="message-body">
-        {gamesArray !== null ?
+        {gamesArray ?
         <Carousel items={renderGames()}/>
         :
         <p>Loading...</p>
