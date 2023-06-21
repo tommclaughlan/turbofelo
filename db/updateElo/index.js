@@ -131,8 +131,39 @@ exports.handler = async (event, context) => {
     const newElos = calculateElos(results);
 
     await updateElos(newElos);
+    
+        const gameToSave = {
+        teams: [
+            {
+                players: [
+                    {
+                        username: usernames[0],
+                        elo: newElos[usernames[0]]
+                    },
+                    {
+                        username: usernames[1],
+                        elo: newElos[usernames[1]]
+                    }
+                ],
+                score: game.teams[0].score
+            },
+            {
+                players: [
+                    {
+                        username: usernames[2],
+                        elo: newElos[usernames[2]]
+                    },
+                    {
+                        username: usernames[3],
+                        elo: newElos[usernames[3]]
+                    }
+                ],
+                score: game.teams[1].score
+            }
+        ]
+    }
 
-    await saveGame(game);
+    await saveGame(gameToSave);
 
     const db = await connectToDatabase();
     const users = await db.collection("users")
@@ -143,7 +174,7 @@ exports.handler = async (event, context) => {
     const games = await db.collection("games")
     .find({})
     .sort({creationDate: -1})
-    .limit(3)
+    .limit(6)
     .toArray();
 
     const responseBody = {
@@ -160,3 +191,4 @@ exports.handler = async (event, context) => {
 
     return response;
 }
+
