@@ -1,14 +1,10 @@
-.page-body {
-    width: 100%;
-}
-
 .action-buttons {
-    padding-left: 0;
-    padding-right: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .action-button {
-    display: block;
-    width: 100%;
-    margin-bottom: 2%;
+  display: block;
+  width: 100%;
+  margin-bottom: 2%;
 }
