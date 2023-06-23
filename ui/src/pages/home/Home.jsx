@@ -9,6 +9,12 @@ import "./Home.css";
 import LatestGames from "../../components/latestGames/LatestGames";
 import Page from "../../layouts/Page";
 
+let requestParams = "";
+
+if (process.env.NODE_ENV !== "production") {
+    requestParams += "?test=true";
+}
+
 function Home() {
     const [showRegister, setShowRegister] = useState(false);
     const [showSubmit, setShowSubmitScore] = useState(false);
@@ -16,13 +22,9 @@ function Home() {
     const [userArray, setUserArray] = useState(null);
     const [gamesArray, setGamesArray] = useState(null);
 
-    let requestParams = "";
-
-    if (process.env.NODE_ENV !== "production") {
-        requestParams += "?test=true";
-    }
-
     useEffect(() => {
+        console.log("fetching");
+
         fetch(
             `https://7wpo57scz7.execute-api.eu-north-1.amazonaws.com/default/getUsers${requestParams}`
         )
@@ -35,7 +37,7 @@ function Home() {
                     console.log(error);
                 }
             );
-    }, [requestParams]);
+    }, []);
 
     useEffect(() => {
         fetch(
@@ -50,7 +52,7 @@ function Home() {
                     console.log(error);
                 }
             );
-    }, [requestParams]);
+    }, []);
 
     return (
         <>
