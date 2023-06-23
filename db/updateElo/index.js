@@ -6,9 +6,6 @@ const MongoClient = require("mongodb").MongoClient;
 // Replace the following with your Atlas connection string
 const MONGODB_URI = "secret";
 
-// The database to use
-const dbName = "felo";
-
 let cachedClient = null;
 let cachedDb = null;
 
@@ -25,14 +22,14 @@ async function connectToClient() {
     return client;
 }
 
-async function connectToDatabase() {
+async function connectToDatabase(isTest) {
     if (cachedDb) {
         return cachedDb;
     }
 
     const client = await connectToClient();
 
-    const db = await client.db(dbName);
+    const db = await client.db(isTest ? "felo_test" : "felo");
 
     cachedDb = db;
 
@@ -50,8 +47,8 @@ async function closeConnection() {
     cachedDb = null;
 }
 
-async function updateUserInDB(username, elo) {
-    const db = await connectToDatabase();
+async function updateUserInDB(username, elo, isTest) {
+    const db = await connectToDatabase(isTest);
     const col = db.collection("users");
     await col.updateOne(
         { username: username },
@@ -63,28 +60,28 @@ async function updateUserInDB(username, elo) {
     );
 }
 
-async function saveGame(game) {
-    const db = await connectToDatabase();
+async function saveGame(game, isTest) {
+    const db = await connectToDatabase(isTest);
     const col = db.collection("games");
     game.creationDate = new Date();
     await col.insertOne(game);
 }
 
-async function updateElos(newElos) {
+async function updateElos(newElos, isTest) {
     for (username of Object.keys(newElos)) {
-        await updateUserInDB(username, newElos[username]);
+        await updateUserInDB(username, newElos[username], isTest);
     }
 }
 
-async function retrievePlayersFromDB(usernames) {
-    const db = await connectToDatabase();
+async function retrievePlayersFromDB(usernames, isTest) {
+    const db = await connectToDatabase(isTest);
     const users = db.collection("users");
     const query = { username: { $in: usernames } };
     return await users.find(query).toArray();
 }
 
-async function retrievePlayerDictionaryFromDB(usernames) {
-    const dbPlayers = await retrievePlayersFromDB(usernames);
+async function retrievePlayerDictionaryFromDB(usernames, isTest) {
+    const dbPlayers = await retrievePlayersFromDB(usernames, isTest);
 
     return dbPlayers.reduce(
         (acc, player) => ({
@@ -123,13 +120,15 @@ const calculateElos = (teams) => {
 };
 
 exports.handler = async (event, context) => {
+    const isTest = event.queryStringParameters?.test === "true";
+
     /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
     context.callbackWaitsForEmptyEventLoop = false;
 
     const game = JSON.parse(event.body);
 
     const usernames = game.teams.flatMap((team) => team.players);
-    const dbPlayers = await retrievePlayerDictionaryFromDB(usernames);
+    const dbPlayers = await retrievePlayerDictionaryFromDB(usernames, isTest);
 
     const results = game.teams.map((team) => ({
         players: team.players.map((username) => dbPlayers[username]),
@@ -138,7 +137,7 @@ exports.handler = async (event, context) => {
 
     const newElos = calculateElos(results);
 
-    await updateElos(newElos);
+    await updateElos(newElos, isTest);
 
     const gameToSave = {
         teams: [
@@ -146,11 +145,12 @@ exports.handler = async (event, context) => {
             [usernames[2], usernames[3]],
         ],
         score: [game.teams[0].score, game.teams[1].score],
+        newElos,
     };
 
-    await saveGame(gameToSave);
+    await saveGame(gameToSave, isTest);
 
-    const db = await connectToDatabase();
+    const db = await connectToDatabase(isTest);
     const users = await db
         .collection("users")
         .find({})
