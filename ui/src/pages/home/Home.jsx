@@ -16,9 +16,15 @@ function Home() {
     const [userArray, setUserArray] = useState(null);
     const [gamesArray, setGamesArray] = useState(null);
 
+    let requestParams = "";
+
+    if (process.env.NODE_ENV !== "production") {
+        requestParams += "?test=true";
+    }
+
     useEffect(() => {
         fetch(
-            ` https://7wpo57scz7.execute-api.eu-north-1.amazonaws.com/default/getUsers`
+            `https://7wpo57scz7.execute-api.eu-north-1.amazonaws.com/default/getUsers${requestParams}`
         )
             .then((res) => res.json())
             .then(
@@ -29,11 +35,11 @@ function Home() {
                     console.log(error);
                 }
             );
-    }, []);
+    }, [requestParams]);
 
     useEffect(() => {
         fetch(
-            ` https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames`
+            `https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames${requestParams}`
         )
             .then((res) => res.json())
             .then(
@@ -44,7 +50,7 @@ function Home() {
                     console.log(error);
                 }
             );
-    }, []);
+    }, [requestParams]);
 
     return (
         <>
