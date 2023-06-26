@@ -1,4 +1,5 @@
 import { useFetchUsers } from "../../services/apiSerice";
+import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import "./Scoreboard.css";
 
 const getIcon = (index) => {
@@ -81,23 +82,24 @@ const Scoreboard = () => {
     };
 
     return (
-        <table className="table is-striped is-hoverable is-fullwidth">
-            <thead className="thead">
-                <tr className="tr">
-                    <th className="th"></th>
-                    <th className="th has-text-centered">Rank</th>
-                    <th className="th">Username</th>
-                    <th className="th has-text-right">ELO</th>
-                    <th className="th has-text-centered">Win %</th>
-                    <th className="th">Form</th>
-                </tr>
-            </thead>
-            {isUsersLoading ? (
-                <div>Loading...</div>
-            ) : (
-                <tbody className="tbody">{renderScoreboard()}</tbody>
-            )}
-        </table>
+        <>
+            <table className="table is-striped is-hoverable is-fullwidth">
+                <thead className="thead">
+                    <tr className="tr">
+                        <th className="th"></th>
+                        <th className="th has-text-centered">Rank</th>
+                        <th className="th">Username</th>
+                        <th className="th has-text-right">ELO</th>
+                        <th className="th has-text-centered">Win %</th>
+                        <th className="th">Form</th>
+                    </tr>
+                </thead>
+                {!isUsersLoading && (
+                    <tbody className="tbody">{renderScoreboard()}</tbody>
+                )}
+            </table>
+            {isUsersLoading && <LoadingSpinner />}
+        </>
     );
 };
 

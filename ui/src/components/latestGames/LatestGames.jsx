@@ -1,6 +1,7 @@
 import "./latestGames.css";
 import Carousel from "../carousel/Carousel";
 import { useFetchGames } from "../../services/apiSerice";
+import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 const LatestGames = () => {
     const { isLoading: isGamesLoading, data: gamesData } = useFetchGames();
@@ -61,7 +62,7 @@ const LatestGames = () => {
                 {!isGamesLoading && gamesData ? (
                     <Carousel items={renderGames()} />
                 ) : (
-                    <p>Loading...</p>
+                    <LoadingSpinner />
                 )}
             </div>
         </article>

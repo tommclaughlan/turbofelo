@@ -4,18 +4,19 @@ import Select from "react-select";
 import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
 
 import "./submitScore.css";
+import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 function SubmitScore({ setShowSubmitScore }) {
     const queryClient = useQueryClient();
 
     const { data: users } = useFetchUsers();
 
-    const { mutate: submitResult } = useSubmitResult({
+    const { mutate: submitResult, isLoading: isPostLoading } = useSubmitResult({
         onSuccess: (data) => {
-            setShowSubmitScore(false);
-
             queryClient.setQueryData("users", data.users);
             queryClient.setQueryData("games", data.game);
+
+            setShowSubmitScore(false);
         },
         onError: (error) => {
             console.log(error);
@@ -213,8 +214,9 @@ function SubmitScore({ setShowSubmitScore }) {
                 <button
                     className="button is-success"
                     onClick={formik.handleSubmit}
+                    disabled={isPostLoading}
                 >
-                    Submit
+                    {isPostLoading ? <LoadingSpinner size="small" /> : "Submit"}
                 </button>
             </footer>
         </div>

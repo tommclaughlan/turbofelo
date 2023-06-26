@@ -1,6 +1,7 @@
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
 import { useFetchUsers, useRegisterUser } from "../../services/apiSerice";
+import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 function RegisterUser({ setShowRegister }) {
     const queryClient = useQueryClient();
@@ -77,7 +78,7 @@ function RegisterUser({ setShowRegister }) {
                     type="submit"
                     disabled={isPostLoading || isUsersLoading}
                 >
-                    Submit
+                    {isPostLoading ? <LoadingSpinner size="small" /> : "Submit"}
                 </button>
             </footer>
         </div>

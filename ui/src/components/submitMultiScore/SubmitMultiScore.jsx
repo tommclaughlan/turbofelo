@@ -4,6 +4,7 @@ import "./submitMultiScore.css";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
+import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 function SubmitMultiScore({ setShowSubmitMultiScore }) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -383,7 +384,11 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                     onClick={formik.handleSubmit}
                     disabled={submitDisabled}
                 >
-                    Submit
+                    {submitDisabled ? (
+                        <LoadingSpinner size="small" />
+                    ) : (
+                        "Submit"
+                    )}
                 </button>
             </footer>
         </div>
