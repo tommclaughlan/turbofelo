@@ -36,20 +36,22 @@ const Scoreboard = (userArray) => {
                 const winPercentage = elem.stats ? elem.stats.winPer * 100 : 0;
 
                 let recentResultsString = "";
-                let gameIndex = 0;
-                while (
-                    gameIndex < 6 &&
-                    gameIndex < elem?.stats.results.length
-                ) {
-                    if (gameIndex > 0) {
-                        recentResultsString += "-";
-                    }
+                if (elem?.stats?.results) {
+                    let gameIndex = 0;
+                    while (
+                        gameIndex < 6 &&
+                        gameIndex < elem?.stats.results.length
+                    ) {
+                        if (gameIndex > 0) {
+                            recentResultsString += "-";
+                        }
 
-                    recentResultsString +=
-                        elem.stats.results[gameIndex].myScore === 10
-                            ? "W"
-                            : "L";
-                    gameIndex++;
+                        recentResultsString +=
+                            elem.stats.results[gameIndex].myScore === 10
+                                ? "W"
+                                : "L";
+                        gameIndex++;
+                    }
                 }
 
                 return (
