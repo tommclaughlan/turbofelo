@@ -1,7 +1,10 @@
 import "./latestGames.css";
 import Carousel from "../carousel/Carousel";
+import { useFetchGames } from "../../services/apiSerice";
 
-const LatestGames = ({ gamesArray }) => {
+const LatestGames = () => {
+    const { isLoading: isGamesLoading, data: gamesData } = useFetchGames();
+
     const renderPlayers = (players) => {
         let playersString = "";
         for (let i = 0; i < players.length; i++) {
@@ -15,34 +18,38 @@ const LatestGames = ({ gamesArray }) => {
     };
 
     const renderGames = () => {
-        if (gamesArray) {
-            const games = gamesArray.map((elem, index, array) => {
-                const datePlayed = new Date(
-                    parseInt(elem._id.substring(0, 8), 16) * 1000
-                );
-                return (
-                    <div>
-                        <div className="columns">
-                            <div className="column">
-                                {renderPlayers(elem.teams[0])}
-                            </div>
-                            <div className="column is-one-fifth">
-                                {`${elem.score[0]} - ${elem.score[1]}`}
-                            </div>
-                            <div className="column">
-                                {renderPlayers(elem.teams[1])}
-                            </div>
-                        </div>
-                        <p className="has-text-centered">
-                            {`Played at: ${datePlayed.toLocaleTimeString(
-                                "en-UK"
-                            )} ${datePlayed.toLocaleDateString("en-UK")}`}
-                        </p>
-                    </div>
-                );
-            });
-            return games;
+        if (!gamesData) {
+            return;
         }
+
+        const games = gamesData.map((elem, index, array) => {
+            const datePlayed = new Date(
+                parseInt(elem._id.substring(0, 8), 16) * 1000
+            );
+
+            return (
+                <div>
+                    <div className="columns">
+                        <div className="column">
+                            {renderPlayers(elem.teams[0])}
+                        </div>
+                        <div className="column is-one-fifth">
+                            {`${elem.score[0]} - ${elem.score[1]}`}
+                        </div>
+                        <div className="column">
+                            {renderPlayers(elem.teams[1])}
+                        </div>
+                    </div>
+                    <p className="has-text-centered">
+                        {`Played at: ${datePlayed.toLocaleTimeString(
+                            "en-UK"
+                        )} ${datePlayed.toLocaleDateString("en-UK")}`}
+                    </p>
+                </div>
+            );
+        });
+
+        return games;
     };
 
     return (
@@ -51,7 +58,7 @@ const LatestGames = ({ gamesArray }) => {
                 <p>Latest Games</p>
             </div>
             <div className="message-body">
-                {gamesArray !== null ? (
+                {!isGamesLoading && gamesData ? (
                     <Carousel items={renderGames()} />
                 ) : (
                     <p>Loading...</p>

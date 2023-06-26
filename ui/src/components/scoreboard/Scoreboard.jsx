@@ -1,3 +1,4 @@
+import { useFetchUsers } from "../../services/apiSerice";
 import "./Scoreboard.css";
 
 const getIcon = (index) => {
@@ -13,13 +14,15 @@ const getIcon = (index) => {
     }
 };
 
-const Scoreboard = (userArray) => {
-    const renderScoreboard = ({ userArray }) => {
-        if (userArray) {
+const Scoreboard = () => {
+    const { isLoading: isUsersLoading, data: userData } = useFetchUsers();
+
+    const renderScoreboard = () => {
+        if (userData) {
             let previousElo = -1;
             let currentRank = 0;
 
-            const users = userArray.map((elem, index, array) => {
+            const users = userData.map((elem, index, array) => {
                 const isEqualToPreviousElo = elem.elo === previousElo;
 
                 if (!isEqualToPreviousElo) {
@@ -36,20 +39,23 @@ const Scoreboard = (userArray) => {
                 const winPercentage = elem.stats ? elem.stats.winPer * 100 : 0;
 
                 let recentResultsString = "";
-                let gameIndex = 0;
-                while (
-                    gameIndex < 6 &&
-                    gameIndex < elem?.stats.results.length
-                ) {
-                    if (gameIndex > 0) {
-                        recentResultsString += "-";
-                    }
 
-                    recentResultsString +=
-                        elem.stats.results[gameIndex].myScore === 10
-                            ? "W"
-                            : "L";
-                    gameIndex++;
+                if (elem?.stats?.results) {
+                    let gameIndex = 0;
+                    while (
+                        gameIndex < 6 &&
+                        gameIndex < elem?.stats.results.length
+                    ) {
+                        if (gameIndex > 0) {
+                            recentResultsString += "-";
+                        }
+
+                        recentResultsString +=
+                            elem.stats.results[gameIndex].myScore === 10
+                                ? "W"
+                                : "L";
+                        gameIndex++;
+                    }
                 }
 
                 return (
@@ -81,7 +87,11 @@ const Scoreboard = (userArray) => {
                     <th className="th">Form</th>
                 </tr>
             </thead>
-            <tbody className="tbody">{renderScoreboard(userArray)}</tbody>
+            {isUsersLoading ? (
+                <div>Loading...</div>
+            ) : (
+                <tbody className="tbody">{renderScoreboard()}</tbody>
+            )}
         </table>
     );
 };

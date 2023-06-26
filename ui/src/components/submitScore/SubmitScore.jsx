@@ -1,18 +1,26 @@
 import { useFormik } from "formik";
+import { useQueryClient } from "react-query";
 import Select from "react-select";
+import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
+
 import "./submitScore.css";
 
-function SubmitScore({
-    setUserArray,
-    setShowSubmitScore,
-    userArray,
-    setGamesArray,
-}) {
-    let requestParams = "";
+function SubmitScore({ setShowSubmitScore }) {
+    const queryClient = useQueryClient();
 
-    if (process.env.NODE_ENV !== "production") {
-        requestParams += "?test=true";
-    }
+    const { data: users } = useFetchUsers();
+
+    const { mutate: submitResult } = useSubmitResult({
+        onSuccess: (data) => {
+            setShowSubmitScore(false);
+
+            queryClient.setQueryData("users", data.users);
+            queryClient.setQueryData("games", data.game);
+        },
+        onError: (error) => {
+            console.log(error);
+        },
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -41,45 +49,7 @@ function SubmitScore({
             return errors;
         },
         onSubmit: (values) => {
-            fetch(
-                `https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo${requestParams}`,
-                {
-                    mode: "cors",
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                    },
-                    body: JSON.stringify({
-                        teams: [
-                            {
-                                players: [
-                                    values.teamOnePlayerOne,
-                                    values.teamOnePlayerTwo,
-                                ],
-                                score: values.teamOneScore,
-                            },
-                            {
-                                players: [
-                                    values.teamTwoPlayerOne,
-                                    values.teamTwoPlayerTwo,
-                                ],
-                                score: values.teamTwoScore,
-                            },
-                        ],
-                    }),
-                }
-            )
-                .then((res) => res.json())
-                .then(
-                    (result) => {
-                        setUserArray(result.users);
-                        setGamesArray(result.game);
-                        setShowSubmitScore(false);
-                    },
-                    (error) => {
-                        console.log(error);
-                    }
-                );
+            submitResult(values);
         },
     });
 
@@ -168,7 +138,7 @@ function SubmitScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamOnePlayerOne",
@@ -185,7 +155,7 @@ function SubmitScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamOnePlayerTwo",
@@ -204,7 +174,7 @@ function SubmitScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamTwoPlayerOne",
@@ -221,7 +191,7 @@ function SubmitScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamTwoPlayerTwo",

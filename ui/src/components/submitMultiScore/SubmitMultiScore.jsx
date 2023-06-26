@@ -2,14 +2,25 @@ import { useFormik } from "formik";
 import Select from "react-select";
 import "./submitMultiScore.css";
 import { useState } from "react";
+import { useQueryClient } from "react-query";
+import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
 
-function SubmitMultiScore({
-    setUserArray,
-    setShowSubmitMultiScore,
-    userArray,
-    setGamesArray,
-}) {
+function SubmitMultiScore({ setShowSubmitMultiScore }) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
+
+    const queryClient = useQueryClient();
+
+    const { data: users } = useFetchUsers();
+
+    const { mutateAsync: submitResult } = useSubmitResult({
+        onSuccess: async (data) => {
+            queryClient.setQueryData("users", data.users);
+            queryClient.setQueryData("games", data.game);
+        },
+        onError: (error) => {
+            console.log(error);
+        },
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -54,79 +65,40 @@ function SubmitMultiScore({
             setSubmitDisabled(true);
             const games = [];
             games.push({
-                teams: [
-                    {
-                        players: [values.playerOne, values.playerTwo],
-                        score: values.gameOneTeamOne,
-                    },
-                    {
-                        players: [values.playerThree, values.playerFour],
-                        score: values.gameOneTeamTwo,
-                    },
-                ],
+                teamOnePlayerOne: values.playerOne,
+                teamOnePlayerTwo: values.playerTwo,
+                teamTwoPlayerOne: values.playerThree,
+                teamTwoPlayerTwo: values.playerFour,
+                teamOneScore: values.gameOneTeamOne,
+                teamTwoScore: values.gameOneTeamTwo,
             });
+
             games.push({
-                teams: [
-                    {
-                        players: [values.playerOne, values.playerThree],
-                        score: values.gameTwoTeamOne,
-                    },
-                    {
-                        players: [values.playerTwo, values.playerFour],
-                        score: values.gameTwoTeamTwo,
-                    },
-                ],
+                teamOnePlayerOne: values.playerOne,
+                teamOnePlayerTwo: values.playerThree,
+                teamTwoPlayerOne: values.playerTwo,
+                teamTwoPlayerTwo: values.playerFour,
+                teamOneScore: values.gameTwoTeamOne,
+                teamTwoScore: values.gameTwoTeamTwo,
             });
+
             games.push({
-                teams: [
-                    {
-                        players: [values.playerOne, values.playerFour],
-                        score: values.gameThreeTeamOne,
-                    },
-                    {
-                        players: [values.playerTwo, values.playerThree],
-                        score: values.gameThreeTeamTwo,
-                    },
-                ],
+                teamOnePlayerOne: values.playerOne,
+                teamOnePlayerTwo: values.playerFour,
+                teamTwoPlayerOne: values.playerTwo,
+                teamTwoPlayerTwo: values.playerThree,
+                teamOneScore: values.gameThreeTeamOne,
+                teamTwoScore: values.gameThreeTeamTwo,
             });
 
             for (let game of games) {
                 await submitResult(game);
             }
+
             setSubmitDisabled(false);
             setShowSubmitMultiScore(false);
         },
     });
-
-    let requestParams = "";
-
-    if (process.env.NODE_ENV !== "production") {
-        requestParams += "?test=true";
-    }
-
-    const submitResult = async (game) => {
-        await fetch(
-            `https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo${requestParams}`,
-            {
-                mode: "cors",
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                },
-                body: JSON.stringify(game),
-            }
-        )
-            .then((res) => res.json())
-            .then(
-                (result) => {
-                    setUserArray(result.users);
-                    setGamesArray(result.game);
-                },
-                (error) => {
-                    console.log(error);
-                }
-            );
-    };
 
     const formatOptions = (options) => {
         if (options) {
@@ -159,7 +131,7 @@ function SubmitMultiScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerOne",
@@ -176,7 +148,7 @@ function SubmitMultiScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerTwo",
@@ -195,7 +167,7 @@ function SubmitMultiScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerThree",
@@ -212,7 +184,7 @@ function SubmitMultiScore({
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(userArray)}
+                                    options={formatOptions(users)}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerFour",

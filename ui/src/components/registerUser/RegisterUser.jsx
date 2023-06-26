@@ -1,14 +1,23 @@
-import { useState } from "react";
 import { useFormik } from "formik";
+import { useQueryClient } from "react-query";
+import { useFetchUsers, useRegisterUser } from "../../services/apiSerice";
 
-function RegisterUser({ setUserArray, setShowRegister, userArray }) {
-    const [submitDisabled, setSubmitDisabled] = useState(false);
+function RegisterUser({ setShowRegister }) {
+    const queryClient = useQueryClient();
 
-    let requestParams = "";
+    const { data: users, isLoading: isUsersLoading } = useFetchUsers();
 
-    if (process.env.NODE_ENV !== "production") {
-        requestParams += "?test=true";
-    }
+    const { mutate: registerUser, isLoading: isPostLoading } = useRegisterUser({
+        onSuccess: (data) => {
+            // TODO pull users out into a const
+            queryClient.setQueryData("users", data);
+
+            setShowRegister(false);
+        },
+        onError: (error) => {
+            console.error(error);
+        },
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -17,43 +26,19 @@ function RegisterUser({ setUserArray, setShowRegister, userArray }) {
         validate: (values) => {
             const errors = {};
             if (
-                userArray.filter((e) => e.username === values.username).length >
-                0
+                users.filter((e) => e.username === values.username).length > 0
             ) {
                 errors.username = "Username must be unique";
             }
+
             if (values.username === "") {
                 errors.username = "Username must not be empty";
             }
+
             return errors;
         },
-        onSubmit: async (values) => {
-            setSubmitDisabled(true);
-            await fetch(
-                `https://fsjps0x3s4.execute-api.eu-north-1.amazonaws.com/default/registerUser${requestParams}`,
-                {
-                    mode: "cors",
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                    },
-                    body: JSON.stringify({
-                        username: values.username,
-                        elo: 1000,
-                    }),
-                }
-            )
-                .then((res) => res.json())
-                .then(
-                    (result) => {
-                        setUserArray(result);
-                        setShowRegister(false);
-                    },
-                    (error) => {
-                        console.log(error);
-                    }
-                );
-            setSubmitDisabled(false);
+        onSubmit: (values) => {
+            registerUser(values);
         },
     });
 
@@ -90,7 +75,7 @@ function RegisterUser({ setUserArray, setShowRegister, userArray }) {
                     className="button is-success"
                     onClick={formik.handleSubmit}
                     type="submit"
-                    disabled={submitDisabled}
+                    disabled={isPostLoading || isUsersLoading}
                 >
                     Submit
                 </button>
