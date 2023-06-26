@@ -37,8 +37,9 @@ const Scoreboard = () => {
                 const icon = getIcon(ranking);
 
                 const winPercentage = elem.stats ? elem.stats.winPer * 100 : 0;
+                const roundedWin = winPercentage.toFixed(2);
 
-                let recentResultsString = "";
+                let recentResults = [];
 
                 if (elem?.stats?.results) {
                     let gameIndex = 0;
@@ -46,14 +47,20 @@ const Scoreboard = () => {
                         gameIndex < 6 &&
                         gameIndex < elem?.stats.results.length
                     ) {
-                        if (gameIndex > 0) {
-                            recentResultsString += "-";
-                        }
+                        const isWin =
+                            elem.stats.results[gameIndex].myScore === 10;
 
-                        recentResultsString +=
-                            elem.stats.results[gameIndex].myScore === 10
-                                ? "W"
-                                : "L";
+                        const character = isWin ? "W" : "L";
+
+                        const parentClass = isWin
+                            ? "form-result-win"
+                            : "form-result-loss";
+
+                        recentResults.push(
+                            <span className={`form-result ${parentClass}`}>
+                                <span>{character}</span>
+                            </span>
+                        );
                         gameIndex++;
                     }
                 }
@@ -61,13 +68,11 @@ const Scoreboard = () => {
                 return (
                     <tr className="tr" key={elem._id}>
                         <td className="td">{icon}</td>
-                        <td className="td">{displayRank}</td>
+                        <td className="td has-text-centered">{displayRank}</td>
                         <td className="td">{elem.username}</td>
-                        <td className="td">{elem.elo}</td>
-                        <td className="td">
-                            {`${Math.round(winPercentage * 100) / 100}%`}
-                        </td>
-                        <td className="td">{recentResultsString}</td>
+                        <td className="td has-text-right">{elem.elo}</td>
+                        <td className="td has-text-centered">{`${roundedWin}%`}</td>
+                        <td className="td">{recentResults}</td>
                     </tr>
                 );
             });
@@ -80,10 +85,10 @@ const Scoreboard = () => {
             <thead className="thead">
                 <tr className="tr">
                     <th className="th"></th>
-                    <th className="th">Rank</th>
+                    <th className="th has-text-centered">Rank</th>
                     <th className="th">Username</th>
-                    <th className="th">ELO</th>
-                    <th className="th">Win %</th>
+                    <th className="th has-text-right">ELO</th>
+                    <th className="th has-text-centered">Win %</th>
                     <th className="th">Form</th>
                 </tr>
             </thead>
