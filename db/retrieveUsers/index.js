@@ -1,11 +1,8 @@
 // Import the MongoDB driver
 const MongoClient = require("mongodb").MongoClient;
- 
-// Replace the following with your Atlas connection string                                                                                                                                        
+
+// Replace the following with your Atlas connection string
 const MONGODB_URI = "secret";
- 
-// The database to use
-const dbName = "felo";
 
 let cachedClient = null;
 let cachedDb = null;
@@ -23,14 +20,14 @@ async function connectToClient() {
     return client;
 }
 
-async function connectToDatabase() {
+async function connectToDatabase(isTest) {
     if (cachedDb) {
         return cachedDb;
     }
 
     const client = await connectToClient();
 
-    const db = await client.db(dbName);
+    const db = await client.db(isTest ? "felo_test" : "felo");
 
     cachedDb = db;
 
@@ -48,16 +45,118 @@ async function closeConnection() {
     cachedDb = null;
 }
 
-
 exports.handler = async (event, context) => {
+    const isTest = event.queryStringParameters?.test === "true";
 
     /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
     context.callbackWaitsForEmptyEventLoop = false;
 
-    const db = await connectToDatabase();
-    const users = await db.collection("users")
-        .find({})
-        .sort({elo: -1})
+    const db = await connectToDatabase(isTest);
+    const users = await db
+        .collection("users")
+        .aggregate([
+            {
+                $lookup: {
+                    from: "games",
+                    let: { username: "$username" },
+                    pipeline: [
+                        {
+                            $unwind: {
+                                path: "$teams",
+                                includeArrayIndex: "teamIndex",
+                            },
+                        },
+                        {
+                            $unwind: {
+                                path: "$teams",
+                            },
+                        },
+                        {
+                            $project: {
+                                _id: "$teams",
+                                creationDate: 1,
+                                myScore: {
+                                    $arrayElemAt: ["$score", "$teamIndex"],
+                                },
+                            },
+                        },
+                        {
+                            $sort: {
+                                creationDate: -1,
+                            },
+                        },
+                        {
+                            $group: {
+                                _id: "$_id",
+                                gamesCount: {
+                                    $sum: 1,
+                                },
+                                wins: {
+                                    $sum: {
+                                        $cond: [
+                                            {
+                                                $eq: ["$myScore", 10],
+                                            },
+                                            1,
+                                            0,
+                                        ],
+                                    },
+                                },
+                                results: {
+                                    $push: "$$ROOT",
+                                },
+                            },
+                        },
+                        {
+                            $addFields: {
+                                winPer: {
+                                    $divide: ["$wins", "$gamesCount"],
+                                },
+                            },
+                        },
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ["$_id", "$$username"],
+                                },
+                            },
+                        },
+                    ],
+
+                    as: "stats",
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    username: 1,
+                    elo: 1,
+                    stats: {
+                        $cond: {
+                            if: {
+                                $lt: [{ $size: "$stats" }, 1],
+                            },
+                            then: [
+                                {
+                                    _id: "$username",
+                                    gamesCount: 0,
+                                    wins: 0,
+                                    results: [],
+                                    winPer: 0,
+                                },
+                            ],
+                            else: "$stats",
+                        },
+                    },
+                },
+            },
+            {
+                $unwind: {
+                    path: "$stats",
+                },
+            },
+        ])
+        .sort({ elo: -1 })
         .toArray();
 
     const response = {
@@ -68,4 +167,4 @@ exports.handler = async (event, context) => {
     await closeConnection();
 
     return response;
-}
+};
