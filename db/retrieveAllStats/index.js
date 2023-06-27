@@ -102,6 +102,14 @@ exports.handler = async (event, context) => {
                     winPer: {
                         $divide: ["$wins", "$gamesCount"],
                     },
+                    results: {
+                        $sortArray: {
+                            input: "$results",
+                            sortBy: {
+                                creationDate: -1,
+                            },
+                        },
+                    },
                 },
             },
             {
