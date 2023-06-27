@@ -9,14 +9,21 @@ if (process.env.NODE_ENV !== "production") {
 export const useFetchUsers = () =>
     useQuery("users", () =>
         fetch(
-            ` https://7wpo57scz7.execute-api.eu-north-1.amazonaws.com/default/getUsers${requestParams}`
+            `https://7wpo57scz7.execute-api.eu-north-1.amazonaws.com/default/getUsers${requestParams}`
         ).then((res) => res.json())
     );
 
 export const useFetchGames = () =>
     useQuery("games", () =>
         fetch(
-            ` https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames${requestParams}`
+            `https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames${requestParams}`
+        ).then((res) => res.json())
+    );
+
+export const useFetchAllStats = () =>
+    useQuery("allStats", () =>
+        fetch(
+            `https://yp1eodick8.execute-api.eu-north-1.amazonaws.com/default/retrieveAllStats${requestParams}`
         ).then((res) => res.json())
     );
 

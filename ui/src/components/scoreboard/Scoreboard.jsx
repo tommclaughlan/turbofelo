@@ -1,4 +1,4 @@
-import { useFetchUsers } from "../../services/apiSerice";
+import { useFetchAllStats, useFetchUsers } from "../../services/apiSerice";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import "./Scoreboard.css";
 
@@ -17,6 +17,7 @@ const getIcon = (index) => {
 
 const Scoreboard = () => {
     const { isLoading: isUsersLoading, data: userData } = useFetchUsers();
+    const { isLoading: isStatsLoading, data: statData } = useFetchAllStats();
 
     const renderScoreboard = () => {
         if (userData) {
@@ -37,19 +38,20 @@ const Scoreboard = () => {
 
                 const icon = getIcon(ranking);
 
-                const winPercentage = elem.stats ? elem.stats.winPer * 100 : 0;
+                const myStats = statData?.[elem.username];
+
+                const winPercentage = myStats ? myStats.winPer * 100 : 0;
                 const roundedWin = winPercentage.toFixed(2);
 
                 let recentResults = [];
 
-                if (elem?.stats?.results) {
+                if (myStats?.results) {
                     let gameIndex = 0;
                     while (
                         gameIndex < 6 &&
-                        gameIndex < elem?.stats.results.length
+                        gameIndex < myStats.results.length
                     ) {
-                        const isWin =
-                            elem.stats.results[gameIndex].myScore === 10;
+                        const isWin = myStats.results[gameIndex].myScore === 10;
 
                         const character = isWin ? "W" : "L";
 
@@ -72,8 +74,12 @@ const Scoreboard = () => {
                         <td className="td has-text-centered">{displayRank}</td>
                         <td className="td">{elem.username}</td>
                         <td className="td has-text-right">{elem.elo}</td>
-                        <td className="td has-text-centered">{`${roundedWin}%`}</td>
-                        <td className="td">{recentResults}</td>
+                        <td className="td has-text-centered">
+                            {isStatsLoading ? "-" : `${roundedWin}%`}
+                        </td>
+                        <td className="td">
+                            {isStatsLoading ? "-" : recentResults}
+                        </td>
                     </tr>
                 );
             });

@@ -1,7 +1,11 @@
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
 import Select from "react-select";
-import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
+import {
+    useFetchAllStats,
+    useFetchUsers,
+    useSubmitResult,
+} from "../../services/apiSerice";
 
 import "./submitScore.css";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
@@ -10,11 +14,14 @@ function SubmitScore({ setShowSubmitScore }) {
     const queryClient = useQueryClient();
 
     const { data: users } = useFetchUsers();
+    const { refetch: refetchAllStats } = useFetchAllStats();
 
     const { mutate: submitResult, isLoading: isPostLoading } = useSubmitResult({
         onSuccess: (data) => {
             queryClient.setQueryData("users", data.users);
             queryClient.setQueryData("games", data.game);
+
+            refetchAllStats();
 
             setShowSubmitScore(false);
         },
