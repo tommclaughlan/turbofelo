@@ -1,10 +1,16 @@
+import React, { useRef } from "react";
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
 import { useFetchUsers, useRegisterUser } from "../../services/apiSerice";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
-function RegisterUser({ setShowRegister }) {
+interface RegisterUserProps {
+    setShowRegister: (isShown: boolean) => void;
+}
+
+function RegisterUser({ setShowRegister }: RegisterUserProps) {
     const queryClient = useQueryClient();
+    const formRef = useRef<HTMLFormElement>(null);
 
     const { data: users, isLoading: isUsersLoading } = useFetchUsers();
 
@@ -25,8 +31,12 @@ function RegisterUser({ setShowRegister }) {
             username: "",
         },
         validate: (values) => {
-            const errors = {};
+            const errors: {
+                username?: string;
+            } = {};
+
             if (
+                users &&
                 users.filter((e) => e.username === values.username).length > 0
             ) {
                 errors.username = "Username must be unique";
@@ -49,7 +59,7 @@ function RegisterUser({ setShowRegister }) {
                 <p className="modal-card-title">Register User</p>
             </header>
             <section className="modal-card-body">
-                <form>
+                <form ref={formRef} onSubmit={formik.handleSubmit}>
                     <div className="field">
                         <label className="label">Username</label>
                         <div className="control">
@@ -74,8 +84,8 @@ function RegisterUser({ setShowRegister }) {
             <footer className="modal-card-foot">
                 <button
                     className="button is-success"
-                    onClick={formik.handleSubmit}
                     type="submit"
+                    onClick={() => formRef.current?.submit()}
                     disabled={isPostLoading || isUsersLoading}
                 >
                     {isPostLoading ? <LoadingSpinner size="small" /> : "Submit"}

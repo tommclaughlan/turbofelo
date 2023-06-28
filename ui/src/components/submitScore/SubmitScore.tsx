@@ -1,3 +1,4 @@
+import React, { useRef } from "react";
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
 import Select from "react-select";
@@ -9,9 +10,15 @@ import {
 
 import "./submitScore.css";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
+import { IUser } from "../../services/apiTypes";
 
-function SubmitScore({ setShowSubmitScore }) {
+interface SubmitScoreProps {
+    setShowSubmitScore: (isShown: boolean) => void;
+}
+
+function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
     const queryClient = useQueryClient();
+    const formRef = useRef<HTMLFormElement>(null);
 
     const { data: users } = useFetchUsers();
     const { refetch: refetchAllStats } = useFetchAllStats();
@@ -32,15 +39,20 @@ function SubmitScore({ setShowSubmitScore }) {
 
     const formik = useFormik({
         initialValues: {
-            teamOneScore: "0",
-            teamTwoScore: "0",
+            teamOneScore: 0,
+            teamTwoScore: 0,
             teamOnePlayerOne: "",
             teamOnePlayerTwo: "",
             teamTwoPlayerOne: "",
             teamTwoPlayerTwo: "",
+            score: "",
+            players: "",
         },
         validate: (values) => {
-            const errors = {};
+            const errors: {
+                score?: string;
+                players?: string;
+            } = {};
             if (values.teamOneScore !== 10 && values.teamTwoScore !== 10) {
                 errors.score = "One score must be 10!";
             }
@@ -61,7 +73,7 @@ function SubmitScore({ setShowSubmitScore }) {
         },
     });
 
-    const formatOptions = (options) => {
+    const formatOptions = (options: ReadonlyArray<IUser>) => {
         if (options) {
             const formattedOptions = options.map((elem, index, array) => {
                 return {
@@ -81,7 +93,7 @@ function SubmitScore({ setShowSubmitScore }) {
                 </p>
             </header>
             <section className="modal-card-body">
-                <form>
+                <form ref={formRef} onSubmit={formik.handleSubmit}>
                     <div className="columns">
                         <div className="column column-score">
                             <div className="field is-grouped">
@@ -146,11 +158,11 @@ function SubmitScore({ setShowSubmitScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamOnePlayerOne",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -163,11 +175,11 @@ function SubmitScore({ setShowSubmitScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamOnePlayerTwo",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -182,11 +194,11 @@ function SubmitScore({ setShowSubmitScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamTwoPlayerOne",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -199,11 +211,11 @@ function SubmitScore({ setShowSubmitScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamTwoPlayerTwo",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -220,7 +232,7 @@ function SubmitScore({ setShowSubmitScore }) {
             <footer className="modal-card-foot">
                 <button
                     className="button is-success"
-                    onClick={formik.handleSubmit}
+                    onClick={() => formRef.current?.submit()}
                     disabled={isPostLoading}
                 >
                     {isPostLoading ? <LoadingSpinner size="small" /> : "Submit"}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Scoreboard from "../../components/scoreboard/Scoreboard";
 import Modal from "../../components/modal/Modal";
 import RegisterUser from "../../components/registerUser/RegisterUser";

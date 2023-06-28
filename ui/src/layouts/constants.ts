@@ -38,5 +38,5 @@ export const QOUTES = [
     "Santa only gave me the Foos",
     "Not optimized for mobile",
     "How to Foos a Ball in 10 Days",
-    "Pokémon The Movie: I Foos You!"
-]
+    "Pokémon The Movie: I Foos You!",
+];

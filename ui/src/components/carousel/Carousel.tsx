@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import "./carousel.css";
 
-const Carousel = ({ items }) => {
+interface CarouselProps {
+    items: ReadonlyArray<React.ReactNode>;
+}
+
+const Carousel = ({ items }: CarouselProps) => {
     const [index, setIndex] = useState(0);
     const length = items?.length;
 

@@ -1,8 +1,9 @@
+import React from "react";
 import { useFetchAllStats, useFetchUsers } from "../../services/apiSerice";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import "./Scoreboard.css";
 
-const getIcon = (index) => {
+const getIcon = (index: number) => {
     switch (index) {
         case 1:
             return "🥇";
@@ -43,7 +44,7 @@ const Scoreboard = () => {
                 const winPercentage = myStats ? myStats.winPer * 100 : 0;
                 const roundedWin = winPercentage.toFixed(2);
 
-                let recentResults = [];
+                let recentResults: React.ReactNode[] = [];
 
                 if (myStats?.results) {
                     let gameIndex = 0;

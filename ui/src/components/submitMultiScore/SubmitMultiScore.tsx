@@ -1,3 +1,4 @@
+import React, { useRef } from "react";
 import { useFormik } from "formik";
 import Select from "react-select";
 import "./submitMultiScore.css";
@@ -5,9 +6,15 @@ import { useState } from "react";
 import { useQueryClient } from "react-query";
 import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
+import { IGameRequest, IUser } from "../../services/apiTypes";
 
-function SubmitMultiScore({ setShowSubmitMultiScore }) {
+interface SubmitMultiScoreProps {
+    setShowSubmitMultiScore: (isShown: boolean) => void;
+}
+
+function SubmitMultiScore({ setShowSubmitMultiScore }: SubmitMultiScoreProps) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
     const queryClient = useQueryClient();
 
@@ -25,19 +32,28 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
 
     const formik = useFormik({
         initialValues: {
-            gameOneTeamOne: "0",
-            gameOneTeamTwo: "0",
-            gameTwoTeamOne: "0",
-            gameTwoTeamTwo: "0",
-            gameThreeTeamOne: "0",
-            gameThreeTeamTwo: "0",
+            gameOneTeamOne: 0,
+            gameOneTeamTwo: 0,
+            gameTwoTeamOne: 0,
+            gameTwoTeamTwo: 0,
+            gameThreeTeamOne: 0,
+            gameThreeTeamTwo: 0,
             playerOne: "",
             playerTwo: "",
             playerThree: "",
             playerFour: "",
+            scoreOne: "",
+            scoreTwo: "",
+            scoreThree: "",
+            players: "",
         },
         validate: (values) => {
-            const errors = {};
+            const errors: {
+                scoreOne?: string;
+                scoreTwo?: string;
+                scoreThree?: string;
+                players?: string;
+            } = {};
             if (values.gameOneTeamOne !== 10 && values.gameOneTeamTwo !== 10) {
                 errors.scoreOne = "Game one must have a 10!";
             }
@@ -60,11 +76,12 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                 errors.players =
                     "All players must be filled in with no duplicates";
             }
+
             return errors;
         },
         onSubmit: async (values) => {
             setSubmitDisabled(true);
-            const games = [];
+            const games: IGameRequest[] = [];
             games.push({
                 teamOnePlayerOne: values.playerOne,
                 teamOnePlayerTwo: values.playerTwo,
@@ -101,7 +118,7 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
         },
     });
 
-    const formatOptions = (options) => {
+    const formatOptions = (options: ReadonlyArray<IUser>) => {
         if (options) {
             const formattedOptions = options.map((elem, index, array) => {
                 return {
@@ -121,7 +138,7 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                 </p>
             </header>
             <section className="modal-card-body">
-                <form>
+                <form ref={formRef} onSubmit={formik.handleSubmit}>
                     <div className="columns">
                         <div className="column">
                             <div className="field">
@@ -132,11 +149,11 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerOne",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -149,11 +166,11 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerTwo",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -168,11 +185,11 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerThree",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -185,11 +202,11 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                                         menuPortal: (state) => "select-menu",
                                     }}
                                     menuPortalTarget={document.body}
-                                    options={formatOptions(users)}
+                                    options={formatOptions(users ?? [])}
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "playerFour",
-                                            selected.value
+                                            selected?.value
                                         );
                                     }}
                                 />
@@ -381,7 +398,7 @@ function SubmitMultiScore({ setShowSubmitMultiScore }) {
                 <button
                     type="submit"
                     className="button is-success"
-                    onClick={formik.handleSubmit}
+                    onClick={() => formRef.current?.submit()}
                     disabled={submitDisabled}
                 >
                     {submitDisabled ? (

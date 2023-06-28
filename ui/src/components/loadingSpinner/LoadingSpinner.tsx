@@ -1,7 +1,13 @@
 import React from "react";
 import "./LoadingSpinner.css";
 
-export default function LoadingSpinner({ size }) {
+type Size = "small" | "medium" | "large";
+
+interface LoadingSpinnerProps {
+    size?: Size;
+}
+
+export default function LoadingSpinner({ size }: LoadingSpinnerProps) {
     const spinnerClass =
         size === "small" ? "loading-spinner-small" : "loading-spinner-medium";
 
