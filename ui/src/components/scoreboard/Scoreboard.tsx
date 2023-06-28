@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useFetchAllStats, useFetchUsers } from "../../services/apiSerice";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import "./Scoreboard.css";
+import { IUser } from "../../services/apiTypes";
 
 const getIcon = (index: number) => {
     switch (index) {
@@ -19,6 +21,11 @@ const getIcon = (index: number) => {
 const Scoreboard = () => {
     const { isLoading: isUsersLoading, data: userData } = useFetchUsers();
     const { isLoading: isStatsLoading, data: statData } = useFetchAllStats();
+    const navigate = useNavigate();
+
+    const handleRowClicked = (rowData: IUser) => {
+        navigate(`/player/${rowData._id}`);
+    };
 
     const renderScoreboard = () => {
         if (userData) {
@@ -70,7 +77,12 @@ const Scoreboard = () => {
                 }
 
                 return (
-                    <tr className="tr" key={elem._id}>
+                    <tr
+                        className="tr is-clickable"
+                        key={elem._id}
+                        data-item={elem}
+                        onClick={() => handleRowClicked(elem)}
+                    >
                         <td className="td">{icon}</td>
                         <td className="td has-text-centered">{displayRank}</td>
                         <td className="td">{elem.username}</td>
