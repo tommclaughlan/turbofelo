@@ -21,7 +21,7 @@ export interface IGameRequest {
 
 export interface IGame {
     _id: string;
-    creationDate: Date;
+    creationDate: string;
     newElos: {
         [username: string]: number;
     };
@@ -37,15 +37,19 @@ export interface IUpdateResponse {
 }
 
 export interface IAllStatsResponse {
-    [usename: string]: {
-        gamesCount: number;
-        wins: number;
-        winPer: number;
-        results: ReadonlyArray<{
-            _id: string;
-            creationDate: Date;
-            username: string;
-            myScore: number;
-        }>;
-    };
+    [usename: string]: IAllStats;
+}
+
+export interface IAllStats {
+    gamesCount: number;
+    wins: number;
+    winPer: number;
+    results: ReadonlyArray<IStatResult>;
+}
+
+export interface IStatResult {
+    _id: string;
+    creationDate: string;
+    username: string;
+    myScore: number;
 }

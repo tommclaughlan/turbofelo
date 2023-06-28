@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import Select from "react-select";
 import "./submitMultiScore.css";
 import { useState } from "react";
 import { useQueryClient } from "react-query";
-import { useFetchUsers, useSubmitResult } from "../../services/apiSerice";
+import { useFetchUsers, useSubmitResult } from "../../services/apiService";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import { IGameRequest, IUser } from "../../services/apiTypes";
 
@@ -14,7 +14,6 @@ interface SubmitMultiScoreProps {
 
 function SubmitMultiScore({ setShowSubmitMultiScore }: SubmitMultiScoreProps) {
     const [submitDisabled, setSubmitDisabled] = useState(false);
-    const formRef = useRef<HTMLFormElement>(null);
 
     const queryClient = useQueryClient();
 
@@ -138,7 +137,7 @@ function SubmitMultiScore({ setShowSubmitMultiScore }: SubmitMultiScoreProps) {
                 </p>
             </header>
             <section className="modal-card-body">
-                <form ref={formRef} onSubmit={formik.handleSubmit}>
+                <form>
                     <div className="columns">
                         <div className="column">
                             <div className="field">
@@ -396,9 +395,9 @@ function SubmitMultiScore({ setShowSubmitMultiScore }: SubmitMultiScoreProps) {
             </section>
             <footer className="modal-card-foot">
                 <button
-                    type="submit"
+                    type="button"
                     className="button is-success"
-                    onClick={() => formRef.current?.submit()}
+                    onClick={formik.submitForm}
                     disabled={submitDisabled}
                 >
                     {submitDisabled ? (

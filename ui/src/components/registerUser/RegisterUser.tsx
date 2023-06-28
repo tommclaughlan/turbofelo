@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
-import { useFetchUsers, useRegisterUser } from "../../services/apiSerice";
+import { useFetchUsers, useRegisterUser } from "../../services/apiService";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 interface RegisterUserProps {
@@ -10,7 +10,6 @@ interface RegisterUserProps {
 
 function RegisterUser({ setShowRegister }: RegisterUserProps) {
     const queryClient = useQueryClient();
-    const formRef = useRef<HTMLFormElement>(null);
 
     const { data: users, isLoading: isUsersLoading } = useFetchUsers();
 
@@ -59,7 +58,7 @@ function RegisterUser({ setShowRegister }: RegisterUserProps) {
                 <p className="modal-card-title">Register User</p>
             </header>
             <section className="modal-card-body">
-                <form ref={formRef} onSubmit={formik.handleSubmit}>
+                <form>
                     <div className="field">
                         <label className="label">Username</label>
                         <div className="control">
@@ -85,7 +84,7 @@ function RegisterUser({ setShowRegister }: RegisterUserProps) {
                 <button
                     className="button is-success"
                     type="submit"
-                    onClick={() => formRef.current?.submit()}
+                    onClick={formik.submitForm}
                     disabled={isPostLoading || isUsersLoading}
                 >
                     {isPostLoading ? <LoadingSpinner size="small" /> : "Submit"}

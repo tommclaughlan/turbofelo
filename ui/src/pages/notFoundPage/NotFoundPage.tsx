@@ -10,9 +10,9 @@ function NotFoundPage() {
             <div className="container is-flex is-flex-direction-column is-justify-content-center has-text-centered">
                 <div className="is-flex is-flex-direct-row is-justify-content-center">
                     <img
-                        className="NotFoundPage-icon"
+                        className="not-found-page-icon"
                         src={goalKeeperIcon}
-                        alt="NotFoundPage icon"
+                        alt="Not Found Page Icon"
                     />
                 </div>
                 <p className="is-size-1">404 Not Found</p>

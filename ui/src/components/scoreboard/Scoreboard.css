@@ -1,22 +1,3 @@
 th:first-child {
     width: 0px;
 }
-
-.form-result {
-    display: inline-block;
-    height: 24px;
-    width: 24px;
-    vertical-align: middle;
-    text-align: center;
-    line-height: 22px !important;
-    margin-right: 2px;
-    color: #fff;
-}
-
-.form-result-win {
-    background-color: #44c424;
-}
-
-.form-result-loss {
-    background-color: #d00;
-}

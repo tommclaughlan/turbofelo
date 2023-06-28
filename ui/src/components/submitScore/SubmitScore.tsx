@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import { useQueryClient } from "react-query";
 import Select from "react-select";
@@ -6,7 +6,7 @@ import {
     useFetchAllStats,
     useFetchUsers,
     useSubmitResult,
-} from "../../services/apiSerice";
+} from "../../services/apiService";
 
 import "./submitScore.css";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
@@ -18,7 +18,6 @@ interface SubmitScoreProps {
 
 function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
     const queryClient = useQueryClient();
-    const formRef = useRef<HTMLFormElement>(null);
 
     const { data: users } = useFetchUsers();
     const { refetch: refetchAllStats } = useFetchAllStats();
@@ -93,7 +92,7 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
                 </p>
             </header>
             <section className="modal-card-body">
-                <form ref={formRef} onSubmit={formik.handleSubmit}>
+                <form>
                     <div className="columns">
                         <div className="column column-score">
                             <div className="field is-grouped">
@@ -232,7 +231,8 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
             <footer className="modal-card-foot">
                 <button
                     className="button is-success"
-                    onClick={() => formRef.current?.submit()}
+                    type="button"
+                    onClick={formik.submitForm}
                     disabled={isPostLoading}
                 >
                     {isPostLoading ? <LoadingSpinner size="small" /> : "Submit"}

@@ -1,0 +1,33 @@
+.player-banner {
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    border: 0.1px solid #f5f2f5;
+}
+
+.avatar-image {
+    min-width: 180px;
+    width: 180px;
+}
+
+.player-overview {
+    width: 100%;
+}
+
+.player-overview-col {
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    width: 100%;
+    padding: 0.8rem;
+}
+
+.player-overview-col::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    height: 0.1rem;
+    left: 0;
+    background: #f5f2f5;
+}

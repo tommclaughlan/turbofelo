@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useFetchAllStats, useFetchUsers } from "../../services/apiSerice";
+import { useFetchAllStats, useFetchUsers } from "../../services/apiService";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 import "./Scoreboard.css";
 import { IUser } from "../../services/apiTypes";
+import FormList from "../formList/FormList";
 
 const getIcon = (index: number) => {
     switch (index) {
@@ -17,6 +18,8 @@ const getIcon = (index: number) => {
             return "";
     }
 };
+
+const formatWinPercentage = (winPer: number) => `${(winPer * 100).toFixed(2)}%`;
 
 const Scoreboard = () => {
     const { isLoading: isUsersLoading, data: userData } = useFetchUsers();
@@ -48,33 +51,7 @@ const Scoreboard = () => {
 
                 const myStats = statData?.[elem.username];
 
-                const winPercentage = myStats ? myStats.winPer * 100 : 0;
-                const roundedWin = winPercentage.toFixed(2);
-
-                let recentResults: React.ReactNode[] = [];
-
-                if (myStats?.results) {
-                    let gameIndex = 0;
-                    while (
-                        gameIndex < 6 &&
-                        gameIndex < myStats.results.length
-                    ) {
-                        const isWin = myStats.results[gameIndex].myScore === 10;
-
-                        const character = isWin ? "W" : "L";
-
-                        const parentClass = isWin
-                            ? "form-result-win"
-                            : "form-result-loss";
-
-                        recentResults.push(
-                            <span className={`form-result ${parentClass}`}>
-                                <span>{character}</span>
-                            </span>
-                        );
-                        gameIndex++;
-                    }
-                }
+                const winPercentage = formatWinPercentage(myStats?.winPer ?? 0);
 
                 return (
                     <tr
@@ -88,10 +65,14 @@ const Scoreboard = () => {
                         <td className="td">{elem.username}</td>
                         <td className="td has-text-right">{elem.elo}</td>
                         <td className="td has-text-centered">
-                            {isStatsLoading ? "-" : `${roundedWin}%`}
+                            {isStatsLoading ? "-" : winPercentage}
                         </td>
                         <td className="td">
-                            {isStatsLoading ? "-" : recentResults}
+                            {isStatsLoading || !myStats ? (
+                                "-"
+                            ) : (
+                                <FormList results={myStats.results} />
+                            )}
                         </td>
                     </tr>
                 );

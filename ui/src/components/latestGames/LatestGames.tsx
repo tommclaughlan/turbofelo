@@ -1,7 +1,7 @@
 import React from "react";
 import "./latestGames.css";
 import Carousel from "../carousel/Carousel";
-import { useFetchGames } from "../../services/apiSerice";
+import { useFetchGames } from "../../services/apiService";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
 
 const LatestGames = () => {
