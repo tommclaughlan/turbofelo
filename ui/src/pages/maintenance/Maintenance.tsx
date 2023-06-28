@@ -1,6 +1,6 @@
 import React from "react";
 import Page from "../../layouts/Page";
-import * as goal from "./maintenance-icon.png";
+import maintenanceIcon from "./maintenance-icon.png";
 
 import "./Maintenance.css";
 
@@ -11,7 +11,7 @@ function Maintenance() {
                 <div className="is-flex is-flex-direct-row is-justify-content-center">
                     <img
                         className="maintenance-icon"
-                        src={goal}
+                        src={maintenanceIcon}
                         alt="Maintenance icon"
                     />
                 </div>

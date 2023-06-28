@@ -6,7 +6,7 @@ import "./Page.css";
 const randomQoute = QOUTES[Math.floor(Math.random() * QOUTES.length)];
 
 interface PageProps {
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 function Page({ children }: PageProps) {
