@@ -93,6 +93,10 @@ async function retrievePlayerDictionaryFromDB(usernames, isTest) {
 }
 
 const calculateElos = (teams) => {
+    const kFactor = Math.abs(teams[0].score - teams[1].score)
+
+    elo.setKFactor(kFactor * 6.4)
+
     const teamElos = teams.map(
         (team) =>
             team.players.reduce((sum, player) => sum + player.elo, 0) /
@@ -133,6 +137,7 @@ exports.handler = async (event, context) => {
     const results = game.teams.map((team) => ({
         players: team.players.map((username) => dbPlayers[username]),
         verdict: Number(team.score) === 10 ? 1 : 0,
+        score: team.score,
     }));
 
     const newElos = calculateElos(results);
