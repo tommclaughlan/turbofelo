@@ -36,9 +36,7 @@ export interface IUpdateResponse {
     game: IGamesResponse;
 }
 
-export interface IAllStatsResponse {
-    [usename: string]: IAllStats;
-}
+export type AllStatsResponse = Record<string, IAllStats>;
 
 export interface IAllStats {
     gamesCount: number;

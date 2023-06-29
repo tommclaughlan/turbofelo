@@ -1,6 +1,6 @@
 import { UseMutationOptions, useMutation, useQuery } from "react-query";
 import {
-    IAllStatsResponse,
+    AllStatsResponse,
     IGameRequest,
     IGamesResponse,
     IUserRequest,
@@ -29,7 +29,7 @@ export const useFetchGames = () =>
     );
 
 export const useFetchAllStats = () =>
-    useQuery<IAllStatsResponse>("allStats", () =>
+    useQuery<AllStatsResponse>("allStats", () =>
         fetch(
             `https://yp1eodick8.execute-api.eu-north-1.amazonaws.com/default/retrieveAllStats${requestParams}`
         ).then((res) => res.json())
