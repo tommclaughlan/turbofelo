@@ -2,7 +2,7 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "display": "Node 14",
     "_version": "14.1.0",
-
+    "exclude": ["*.test*"],
     "compilerOptions": {
         "lib": ["es2020"],
         "module": "node16",
