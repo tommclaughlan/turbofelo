@@ -69,10 +69,10 @@ export async function updateUserInDB(
     );
 }
 
-export async function saveGame(game: IDbGame, isTest: boolean) {
+export async function saveGames(games: IDbGame[], isTest: boolean) {
     const db = await connectToDatabase(isTest);
     const col = db.collection<IDbGame>(GAME_COLLECTION);
-    await col.insertOne(game);
+    await col.insertMany(games);
 }
 
 export async function updateElos(
@@ -142,6 +142,87 @@ export const calculateElos = (results: ReadonlyArray<IResult>) => {
     return newElos;
 };
 
+export const handleSubmitedGames = (
+    games: ReadonlyArray<IUpdateBody>,
+    dbUsers: ReadonlyArray<IDbUser>
+) => {
+    const gamesToSave: IDbGame[] = [];
+    let newElos: Record<string, number> = {};
+
+    games.forEach((game) => {
+        const usernames = game.teams.flatMap((team) => team.players);
+
+        const results: ReadonlyArray<IResult> = game.teams.map((team) => ({
+            players: team.players.map((username) => {
+                let elo = newElos?.[username];
+
+                if (elo === undefined) {
+                    const user = dbUsers.find(
+                        (dbUser) => dbUser.username === username
+                    );
+
+                    if (!user) {
+                        throw new Error(
+                            "Supplied username doesnt exist in the database!"
+                        );
+                    }
+
+                    elo = user.elo;
+                }
+
+                return {
+                    username,
+                    elo,
+                };
+            }),
+            verdict: Number(team.score) === 10 ? 1 : 0,
+            score: team.score,
+        }));
+
+        newElos = {
+            ...newElos,
+            ...calculateElos(results),
+        };
+
+        gamesToSave.push({
+            teams: [
+                [usernames[0], usernames[1]],
+                [usernames[2], usernames[3]],
+            ],
+            score: [game.teams[0].score, game.teams[1].score],
+            newElos,
+            creationDate: new Date(),
+        });
+    });
+
+    return {
+        gamesToSave,
+        newElos,
+    };
+};
+
+export const augmentUsers = (
+    dbUsers: IDbUser[],
+    newElos: Record<string, number>
+) => {
+    const augmentedUsers = [...dbUsers];
+
+    Object.keys(newElos).forEach((username) => {
+        const dbIndex = augmentedUsers.findIndex(
+            (dbUser) => dbUser.username === username
+        );
+
+        if (dbIndex > -1) {
+            augmentedUsers[dbIndex] = {
+                ...augmentedUsers[dbIndex],
+                elo: newElos[username],
+            };
+        }
+    });
+
+    return augmentedUsers;
+};
+
 export const handler: APIGatewayProxyHandler = async (event, context) => {
     const queries = event.queryStringParameters;
     const isTest = queries?.test === "true";
@@ -149,41 +230,24 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
     /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
     context.callbackWaitsForEmptyEventLoop = false;
 
-    const game: IUpdateBody = JSON.parse(event.body ?? "");
-
-    const usernames = game.teams.flatMap((team) => team.players);
-    const dbPlayers = await retrievePlayerDictionaryFromDB(usernames, isTest);
-
-    const results: ReadonlyArray<IResult> = game.teams.map((team) => ({
-        players: team.players.map((username) => dbPlayers[username]),
-        verdict: Number(team.score) === 10 ? 1 : 0,
-        score: team.score,
-    }));
-
-    const newElos = calculateElos(results);
-
-    await updateElos(newElos, isTest);
-
-    const gameToSave: IDbGame = {
-        teams: [
-            [usernames[0], usernames[1]],
-            [usernames[2], usernames[3]],
-        ],
-        score: [game.teams[0].score, game.teams[1].score],
-        newElos,
-        creationDate: new Date(),
-    };
-
-    await saveGame(gameToSave, isTest);
+    const games: ReadonlyArray<IUpdateBody> = JSON.parse(event.body ?? "");
 
     const db = await connectToDatabase(isTest);
-    const users = await db
+    let dbUsers = await db
         .collection<IDbUser>(USER_COLLECTION)
         .find({})
         .sort({ elo: -1 })
         .toArray();
 
-    const games = await db
+    const { gamesToSave, newElos } = handleSubmitedGames(games, dbUsers);
+
+    await saveGames(gamesToSave, isTest);
+
+    await updateElos(newElos, isTest);
+
+    dbUsers = augmentUsers(dbUsers, newElos);
+
+    const dbGames = await db
         .collection<IDbGame>(GAME_COLLECTION)
         .find({})
         .sort({ creationDate: -1 })
@@ -191,8 +255,8 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
         .toArray();
 
     const responseBody = {
-        users: users,
-        game: games,
+        users: dbUsers,
+        games: dbGames,
     };
 
     const response = {

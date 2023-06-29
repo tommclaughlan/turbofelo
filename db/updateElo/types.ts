@@ -19,7 +19,10 @@ export interface IDbUser {
 }
 
 export interface IResult {
-    players: ReadonlyArray<IDbUser>;
+    players: ReadonlyArray<{
+        username: string;
+        elo: number;
+    }>;
     verdict: number;
     score: number;
 }
