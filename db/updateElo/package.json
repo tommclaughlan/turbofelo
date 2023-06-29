@@ -1,8 +1,15 @@
 {
-  "name": "updateElo",
-  "version": "1.0.0",
-  "dependencies": {
-    "elo-rank": "latest",
-    "mongodb": "^5.5.0"
-  }
+    "name": "updateElo",
+    "version": "1.0.0",
+    "scripts": {
+        "compile": "tsc"
+    },
+    "dependencies": {
+        "@types/aws-lambda": "^8.10.119",
+        "@types/elo-rank": "^1.0.1",
+        "@types/node": "^20.3.2",
+        "elo-rank": "latest",
+        "mongodb": "^5.5.0",
+        "typescript": "^5.1.6"
+    }
 }
