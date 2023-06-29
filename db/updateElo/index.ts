@@ -27,7 +27,7 @@ async function connectToClient() {
     return client;
 }
 
-async function connectToDatabase(isTest: boolean) {
+export async function connectToDatabase(isTest: boolean) {
     if (cachedDb) {
         return cachedDb;
     }
@@ -41,7 +41,7 @@ async function connectToDatabase(isTest: boolean) {
     return cachedDb;
 }
 
-async function closeConnection() {
+export async function closeConnection() {
     if (!cachedClient) {
         return;
     }
@@ -52,7 +52,11 @@ async function closeConnection() {
     cachedDb = null;
 }
 
-async function updateUserInDB(username: string, elo: number, isTest: boolean) {
+export async function updateUserInDB(
+    username: string,
+    elo: number,
+    isTest: boolean
+) {
     const db = await connectToDatabase(isTest);
     const col = db.collection<IDbUser>(USER_COLLECTION);
     await col.updateOne(
@@ -65,19 +69,22 @@ async function updateUserInDB(username: string, elo: number, isTest: boolean) {
     );
 }
 
-async function saveGame(game: IDbGame, isTest: boolean) {
+export async function saveGame(game: IDbGame, isTest: boolean) {
     const db = await connectToDatabase(isTest);
     const col = db.collection<IDbGame>(GAME_COLLECTION);
     await col.insertOne(game);
 }
 
-async function updateElos(newElos: Record<string, number>, isTest: boolean) {
+export async function updateElos(
+    newElos: Record<string, number>,
+    isTest: boolean
+) {
     for (let username of Object.keys(newElos)) {
         await updateUserInDB(username, newElos[username], isTest);
     }
 }
 
-async function retrievePlayersFromDB(
+export async function retrievePlayersFromDB(
     usernames: ReadonlyArray<string>,
     isTest: boolean
 ) {
@@ -104,7 +111,7 @@ async function retrievePlayerDictionaryFromDB(
     return dbPlayersMap;
 }
 
-const calculateElos = (results: ReadonlyArray<IResult>) => {
+export const calculateElos = (results: ReadonlyArray<IResult>) => {
     const kFactor = Math.abs(results[0].score - results[1].score);
 
     elo.setKFactor(kFactor * 6.4);
