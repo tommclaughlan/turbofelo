@@ -65,13 +65,17 @@ export const useRegisterUser = (
 export const useSubmitResult = (
     options:
         | Omit<
-              UseMutationOptions<IUpdateResponse, string, IGameRequest>,
+              UseMutationOptions<
+                  IUpdateResponse,
+                  string,
+                  ReadonlyArray<IGameRequest>
+              >,
               "mutationFn"
           >
         | undefined
 ) =>
-    useMutation<IUpdateResponse, string, IGameRequest>(
-        (game) =>
+    useMutation<IUpdateResponse, string, ReadonlyArray<IGameRequest>>(
+        (games) =>
             fetch(
                 `https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo${requestParams}`,
                 {
@@ -80,24 +84,7 @@ export const useSubmitResult = (
                     headers: {
                         Accept: "application/json",
                     },
-                    body: JSON.stringify({
-                        teams: [
-                            {
-                                players: [
-                                    game.teamOnePlayerOne,
-                                    game.teamOnePlayerTwo,
-                                ],
-                                score: game.teamOneScore,
-                            },
-                            {
-                                players: [
-                                    game.teamTwoPlayerOne,
-                                    game.teamTwoPlayerTwo,
-                                ],
-                                score: game.teamTwoScore,
-                            },
-                        ],
-                    }),
+                    body: JSON.stringify(games),
                 }
             ).then((res) => res.json()),
         options

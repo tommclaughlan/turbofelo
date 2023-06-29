@@ -10,7 +10,20 @@ import {
 
 import "./submitScore.css";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
-import { IUser } from "../../services/apiTypes";
+import { IGameForm, IUser } from "../../services/apiTypes";
+
+const gameFormToGameRequest = (game: IGameForm) => ({
+    teams: [
+        {
+            players: [game.teamOnePlayerOne, game.teamOnePlayerTwo],
+            score: game.teamOneScore,
+        },
+        {
+            players: [game.teamTwoPlayerOne, game.teamTwoPlayerTwo],
+            score: game.teamTwoScore,
+        },
+    ],
+});
 
 interface SubmitScoreProps {
     setShowSubmitScore: (isShown: boolean) => void;
@@ -25,7 +38,7 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
     const { mutate: submitResult, isLoading: isPostLoading } = useSubmitResult({
         onSuccess: (data) => {
             queryClient.setQueryData("users", data.users);
-            queryClient.setQueryData("games", data.game);
+            queryClient.setQueryData("games", data.games);
 
             refetchAllStats();
 
@@ -68,7 +81,7 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
             return errors;
         },
         onSubmit: (values) => {
-            submitResult(values);
+            submitResult([gameFormToGameRequest(values)]);
         },
     });
 

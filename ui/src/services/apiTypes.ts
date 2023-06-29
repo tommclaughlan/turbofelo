@@ -10,13 +10,20 @@ export interface IUser {
 
 export type IUsersResponse = ReadonlyArray<IUser>;
 
-export interface IGameRequest {
+export interface IGameForm {
     teamOnePlayerOne: string;
     teamOnePlayerTwo: string;
     teamTwoPlayerOne: string;
     teamTwoPlayerTwo: string;
     teamOneScore: number;
     teamTwoScore: number;
+}
+
+export interface IGameRequest {
+    teams: ReadonlyArray<{
+        players: ReadonlyArray<string>;
+        score: number;
+    }>;
 }
 
 export interface IGame {
@@ -33,7 +40,7 @@ export type IGamesResponse = ReadonlyArray<IGame>;
 
 export interface IUpdateResponse {
     users: IUsersResponse;
-    game: IGamesResponse;
+    games: IGamesResponse;
 }
 
 export type AllStatsResponse = Record<string, IAllStats>;

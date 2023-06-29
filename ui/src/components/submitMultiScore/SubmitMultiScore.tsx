@@ -22,7 +22,7 @@ function SubmitMultiScore({ setShowSubmitMultiScore }: SubmitMultiScoreProps) {
     const { mutateAsync: submitResult } = useSubmitResult({
         onSuccess: async (data) => {
             queryClient.setQueryData("users", data.users);
-            queryClient.setQueryData("games", data.game);
+            queryClient.setQueryData("games", data.games);
         },
         onError: (error) => {
             console.log(error);
@@ -81,36 +81,47 @@ function SubmitMultiScore({ setShowSubmitMultiScore }: SubmitMultiScoreProps) {
         onSubmit: async (values) => {
             setSubmitDisabled(true);
             const games: IGameRequest[] = [];
+
             games.push({
-                teamOnePlayerOne: values.playerOne,
-                teamOnePlayerTwo: values.playerTwo,
-                teamTwoPlayerOne: values.playerThree,
-                teamTwoPlayerTwo: values.playerFour,
-                teamOneScore: values.gameOneTeamOne,
-                teamTwoScore: values.gameOneTeamTwo,
+                teams: [
+                    {
+                        players: [values.playerOne, values.playerTwo],
+                        score: values.gameOneTeamOne,
+                    },
+                    {
+                        players: [values.playerThree, values.playerFour],
+                        score: values.gameOneTeamTwo,
+                    },
+                ],
             });
 
             games.push({
-                teamOnePlayerOne: values.playerOne,
-                teamOnePlayerTwo: values.playerThree,
-                teamTwoPlayerOne: values.playerTwo,
-                teamTwoPlayerTwo: values.playerFour,
-                teamOneScore: values.gameTwoTeamOne,
-                teamTwoScore: values.gameTwoTeamTwo,
+                teams: [
+                    {
+                        players: [values.playerOne, values.playerThree],
+                        score: values.gameTwoTeamOne,
+                    },
+                    {
+                        players: [values.playerTwo, values.playerFour],
+                        score: values.gameTwoTeamTwo,
+                    },
+                ],
             });
 
             games.push({
-                teamOnePlayerOne: values.playerOne,
-                teamOnePlayerTwo: values.playerFour,
-                teamTwoPlayerOne: values.playerTwo,
-                teamTwoPlayerTwo: values.playerThree,
-                teamOneScore: values.gameThreeTeamOne,
-                teamTwoScore: values.gameThreeTeamTwo,
+                teams: [
+                    {
+                        players: [values.playerOne, values.playerFour],
+                        score: values.gameThreeTeamOne,
+                    },
+                    {
+                        players: [values.playerTwo, values.playerThree],
+                        score: values.gameThreeTeamTwo,
+                    },
+                ],
             });
 
-            for (let game of games) {
-                await submitResult(game);
-            }
+            await submitResult(games);
 
             setSubmitDisabled(false);
             setShowSubmitMultiScore(false);
