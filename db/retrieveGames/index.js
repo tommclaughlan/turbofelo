@@ -1,9 +1,9 @@
 // Import the MongoDB driver
 const MongoClient = require("mongodb").MongoClient;
- 
-// Replace the following with your Atlas connection string                                                                                                                                        
+
+// Replace the following with your Atlas connection string
 const MONGODB_URI = "secret";
- 
+
 let cachedClient = null;
 let cachedDb = null;
 
@@ -45,19 +45,53 @@ async function closeConnection() {
     cachedDb = null;
 }
 
+async function getUser(id, isTest) {
+    const db = await connectToDatabase(isTest);
+
+    return db.collection("users").findOne({ _id: id }).toArray();
+}
 
 exports.handler = async (event, context) => {
-    
-    const isTest = event.queryStringParameters?.test === "true";
+    const queries = event.queryStringParameters;
+
+    const isTest = queries?.test === "true";
+
+    const userId = queries?.userId;
 
     /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
     context.callbackWaitsForEmptyEventLoop = false;
 
+    const user = userId ? await getUser(userId, isTest) : null;
+
+    if (userId && !user) {
+        const response = {
+            statusCode: 404,
+            body: JSON.stringify("User now found"),
+        };
+
+        await closeConnection();
+
+        return response;
+    }
+
+    const searchCriteria = user
+        ? {
+              teams: {
+                  $elemMatch: {
+                      $elemMatch: {
+                          $eq: user.username,
+                      },
+                  },
+              },
+          }
+        : {};
+
     const db = await connectToDatabase(isTest);
-    const games = await db.collection("games")
-        .find({})
-        .sort({creationDate: -1})
-        .limit(6)
+    const games = await db
+        .collection("games")
+        .find(searchCriteria)
+        .sort({ creationDate: -1 })
+        .limit(user ? 20 : 6)
         .toArray();
 
     const response = {
@@ -68,4 +102,4 @@ exports.handler = async (event, context) => {
     await closeConnection();
 
     return response;
-}
+};
