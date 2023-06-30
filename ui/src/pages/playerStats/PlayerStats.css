@@ -1,4 +1,4 @@
-.player-banner {
+.player-stat-section {
     padding: 0.8rem;
     border-radius: 0.8rem;
     border: 0.1px solid #f5f2f5;
@@ -21,7 +21,11 @@
     padding: 0.8rem;
 }
 
-.player-overview-col::after {
+.underline-section {
+    position: relative;
+}
+
+.underline-section::after {
     content: "";
     position: absolute;
     width: 100%;
@@ -30,4 +34,63 @@
     height: 0.1rem;
     left: 0;
     background: #f5f2f5;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.team-one,
+.team-two {
+    flex: none !important;
+    width: 40%;
+    overflow: hidden;
+    display: flex;
+}
+
+.team-one {
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.team-two {
+    justify-content: flex-start;
+}
+
+.score {
+    flex: none !important;
+    width: 10%;
+    text-align: center;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.game-results {
+    display: flex;
+    padding-top: 0.75rem;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 768px) {
+    .team-one,
+    .team-two {
+        white-space: normal;
+        flex-direction: column;
+        width: 160px;
+    }
+
+    .score {
+        flex: none;
+        margin-top: 2px;
+
+        width: inherit;
+
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .player-stat-section-header {
+        text-align: center;
+    }
 }

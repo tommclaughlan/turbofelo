@@ -19,7 +19,7 @@ export default function FormList({ results }: FormListProps) {
             const parentClass = isWin ? "form-result-win" : "form-result-loss";
 
             formList.push(
-                <span className={`form-result ${parentClass}`}>
+                <span className={`form-result ${parentClass}`} key={gameIndex}>
                     <span>{character}</span>
                 </span>
             );
