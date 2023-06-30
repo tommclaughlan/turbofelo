@@ -44,7 +44,6 @@
 .team-two {
     flex: none !important;
     width: 40%;
-    overflow: hidden;
     display: flex;
 }
 
@@ -67,7 +66,6 @@
 
 .game-results {
     display: flex;
-    padding-top: 0.75rem;
     justify-content: center;
 }
 

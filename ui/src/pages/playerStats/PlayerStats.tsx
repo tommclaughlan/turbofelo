@@ -48,29 +48,56 @@ const GameCard = ({
     game: IGame;
     currentPlayer?: string;
 }) => {
-    const teamOneStyle =
-        currentPlayer && game.teams[0].includes(currentPlayer)
-            ? "has-text-weight-bold"
-            : "";
-    const teamTwoStyle =
-        currentPlayer && game.teams[1].includes(currentPlayer)
-            ? "has-text-weight-bold"
-            : "";
+    const currentPlayerIndex = [...game.teams[0], ...game.teams[1]].findIndex(
+        (username) => username === currentPlayer
+    );
 
     return (
         <div className="columns underline-section mb-4">
             <div className="column is-two-thirds">
-                <div className="has-text-weight-semibold game-results">
-                    <div className={`no-wrap team-one ${teamOneStyle}`}>
-                        <div>{game.teams[0][0]}</div>
+                <div className="has-text-weight-semibold game-results is-size-6">
+                    <div className="no-wrap team-one">
+                        <div
+                            className={
+                                currentPlayerIndex === 0
+                                    ? "has-text-weight-bold"
+                                    : ""
+                            }
+                        >
+                            {game.teams[0][0]}
+                        </div>
                         <div className="is-hidden-mobile">&nbsp;&&nbsp;</div>
-                        <div>{game.teams[0][1]}</div>
+                        <div
+                            className={
+                                currentPlayerIndex === 1
+                                    ? "has-text-weight-bold"
+                                    : ""
+                            }
+                        >
+                            {game.teams[0][1]}
+                        </div>
                     </div>
                     <div className="no-wrap score has-text-weight-bold">{`${game.score[0]}-${game.score[1]}`}</div>
-                    <div className={`no-wrap team-two ${teamTwoStyle}`}>
-                        <span>{game.teams[1][0]}</span>
+                    <div className="no-wrap team-two">
+                        <span
+                            className={
+                                currentPlayerIndex === 2
+                                    ? "has-text-weight-bold"
+                                    : ""
+                            }
+                        >
+                            {game.teams[1][0]}
+                        </span>
                         <span className="is-hidden-mobile">&nbsp;&&nbsp;</span>
-                        <span>{game.teams[1][1]}</span>
+                        <span
+                            className={
+                                currentPlayerIndex === 3
+                                    ? "has-text-weight-bold"
+                                    : ""
+                            }
+                        >
+                            {game.teams[1][1]}
+                        </span>
                     </div>
                 </div>
             </div>

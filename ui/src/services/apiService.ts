@@ -40,7 +40,7 @@ export const useFetchGames = (id?: string) =>
     useQuery<IGamesResponse>("games", () =>
         fetch(
             `https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames${paramsToString(
-                [...requestParams, `id=${id}`]
+                [...requestParams, `userId=${id}`]
             )}`
         ).then((res) => res.json())
     );
