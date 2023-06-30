@@ -36,14 +36,23 @@ export const useFetchUsers = () =>
         ).then((res) => res.json())
     );
 
-export const useFetchGames = (id?: string) =>
-    useQuery<IGamesResponse>("games", () =>
+export const useFetchGames = (id?: string) => {
+    const params = [...requestParams];
+
+    if (id) {
+        params.push(`userId=${id}`);
+    }
+
+    const queryKey = id ? `games-${id}` : "games";
+
+    return useQuery<IGamesResponse>(queryKey, () =>
         fetch(
             `https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames${paramsToString(
-                [...requestParams, `userId=${id}`]
+                params
             )}`
         ).then((res) => res.json())
     );
+};
 
 export const useFetchAllStats = () =>
     useQuery<AllStatsResponse>("allStats", () =>
