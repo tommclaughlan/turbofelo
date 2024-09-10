@@ -10,6 +10,13 @@ export interface IUser {
 
 export type IUsersResponse = ReadonlyArray<IUser>;
 
+export interface I1v1GameForm {
+    teamOnePlayerOne: string;
+    teamTwoPlayerOne: string;
+    teamOneScore: number;
+    teamTwoScore: number;
+}
+
 export interface IGameForm {
     teamOnePlayerOne: string;
     teamOnePlayerTwo: string;

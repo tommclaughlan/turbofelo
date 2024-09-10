@@ -3,7 +3,7 @@ import Scoreboard from "../../components/scoreboard/Scoreboard";
 import Modal from "../../components/modal/Modal";
 import RegisterUser from "../../components/registerUser/RegisterUser";
 import SubmitScore from "../../components/submitScore/SubmitScore";
-import SubmitMultiScore from "../../components/submitMultiScore/SubmitMultiScore";
+import Submit1v1Score from "../../components/submit1v1Score/Submit1v1Score";
 import LatestGames from "../../components/latestGames/LatestGames";
 import Page from "../../layouts/Page";
 
@@ -12,7 +12,7 @@ import "./Home.css";
 function Home() {
     const [showRegister, setShowRegister] = useState(false);
     const [showSubmit, setShowSubmitScore] = useState(false);
-    const [showSubmitMulti, setShowSubmitMultiScore] = useState(false);
+    const [showSubmit1v1, setShowSubmit1v1Score] = useState(false);
 
     return (
         <>
@@ -29,12 +29,10 @@ function Home() {
                 <SubmitScore setShowSubmitScore={setShowSubmitScore} />
             </Modal>
             <Modal
-                show={showSubmitMulti}
-                handleClose={() => setShowSubmitMultiScore(false)}
+                show={showSubmit1v1}
+                handleClose={() => setShowSubmit1v1Score(false)}
             >
-                <SubmitMultiScore
-                    setShowSubmitMultiScore={setShowSubmitMultiScore}
-                />
+                <Submit1v1Score setShowSubmitScore={setShowSubmit1v1Score} />
             </Modal>
             <Page>
                 <div className="section action-buttons">
@@ -45,18 +43,16 @@ function Home() {
                                     <button
                                         className="button is-warning is-medium action-button"
                                         type="button"
-                                        onClick={() => setShowSubmitScore(true)}
+                                        onClick={() => setShowSubmit1v1Score(true)}
                                     >
-                                        Submit Score
+                                        Submit 1v1 Result
                                     </button>
                                     <button
-                                        className="button is-danger is-medium action-button"
+                                        className="button is-warning is-medium action-button"
                                         type="button"
-                                        onClick={() =>
-                                            setShowSubmitMultiScore(true)
-                                        }
+                                        onClick={() => setShowSubmitScore(true)}
                                     >
-                                        Submit 3 Scores
+                                        Submit 2v2 Result
                                     </button>
                                     <button
                                         className="button is-info is-medium action-button"
@@ -70,12 +66,12 @@ function Home() {
                         </div>
                         <div className="column is-mobile">
                             <div>
-                                <LatestGames />
+                                <LatestGames/>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Scoreboard />
+                <Scoreboard/>
             </Page>
         </>
     );

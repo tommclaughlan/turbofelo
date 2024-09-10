@@ -16,7 +16,7 @@ function Page({ children }: PageProps) {
                 <div className="hero-body has-text-centered">
                     <p className="title">{randomQoute}</p>
                     <p className="subtitle">
-                        Turbo's Table Football Elo Extravaganza
+                        Puttin' croks in 'oles since 2024
                     </p>
                 </div>
             </div>

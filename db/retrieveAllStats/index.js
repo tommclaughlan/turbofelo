@@ -85,7 +85,7 @@ exports.handler = async (event, context) => {
                         $sum: {
                             $cond: [
                                 {
-                                    $eq: ["$myScore", 10],
+                                    $eq: ["$myScore", 2],
                                 },
                                 1,
                                 0,

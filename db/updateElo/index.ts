@@ -1,5 +1,5 @@
 import EloRank from "elo-rank";
-import { APIGatewayProxyHandler } from "aws-lambda";
+import { Handler } from "aws-lambda";
 import { IDbGame, IDbUser, IResult, IUpdateBody } from "./types";
 import { MongoClient, Db } from "mongodb";
 
@@ -175,7 +175,7 @@ export const handleSubmitedGames = (
                     elo,
                 };
             }),
-            verdict: Number(team.score) === 10 ? 1 : 0,
+            verdict: Number(team.score) === 2 ? 1 : 0,
             score: team.score,
         }));
 
@@ -184,11 +184,17 @@ export const handleSubmitedGames = (
             ...calculateElos(results),
         };
 
+        const teams = [];
+        if (usernames.length == 2) {
+            teams.push([usernames[0]]);
+            teams.push([usernames[1]]);
+        } else {
+            teams.push([usernames[0], usernames[1]]);
+            teams.push([usernames[2], usernames[3]]);
+        }
+
         gamesToSave.push({
-            teams: [
-                [usernames[0], usernames[1]],
-                [usernames[2], usernames[3]],
-            ],
+            teams: teams,
             score: [game.teams[0].score, game.teams[1].score],
             newElos,
             creationDate: new Date(),
@@ -223,14 +229,14 @@ export const augmentUsers = (
     return augmentedUsers;
 };
 
-export const handler: APIGatewayProxyHandler = async (event, context) => {
+export const handler: Handler = async (event, context) => {
     const queries = event.queryStringParameters;
     const isTest = queries?.test === "true";
 
     /* By default, the callback waits until the runtime event loop is empty before freezing the process and returning the results to the caller. Setting this property to false requests that AWS Lambda freeze the process soon after the callback is invoked, even if there are events in the event loop. AWS Lambda will freeze the process, any state data, and the events in the event loop. Any remaining events in the event loop are processed when the Lambda function is next invoked, if AWS Lambda chooses to use the frozen process. */
     context.callbackWaitsForEmptyEventLoop = false;
 
-    const games: ReadonlyArray<IUpdateBody> = JSON.parse(event.body ?? "");
+    const games: ReadonlyArray<IUpdateBody> = event ?? "";
 
     const db = await connectToDatabase(isTest);
     let dbUsers = await db

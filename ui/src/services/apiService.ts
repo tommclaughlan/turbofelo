@@ -11,7 +11,7 @@ import {
 const requestParams: string[] = [];
 
 if (process.env.NODE_ENV !== "production") {
-    requestParams.push("test=true");
+    requestParams.push("test=false");
 }
 
 const paramsToString = (params: ReadonlyArray<string>) =>
@@ -30,10 +30,11 @@ const paramsToString = (params: ReadonlyArray<string>) =>
 export const useFetchUsers = () =>
     useQuery<IUsersResponse>("users", () =>
         fetch(
-            `https://7wpo57scz7.execute-api.eu-north-1.amazonaws.com/default/getUsers${paramsToString(
+            `https://t6jhp0e39a.execute-api.eu-west-1.amazonaws.com/default/elo/getUsers${paramsToString(
                 requestParams
             )}`
         ).then((res) => res.json())
+         .then(res => JSON.parse(res.body))
     );
 
 export const useFetchGames = (id?: string) => {
@@ -47,20 +48,22 @@ export const useFetchGames = (id?: string) => {
 
     return useQuery<IGamesResponse>(queryKey, () =>
         fetch(
-            `https://mn2x2tur8c.execute-api.eu-north-1.amazonaws.com/default/retrieveGames${paramsToString(
+            `https://t6jhp0e39a.execute-api.eu-west-1.amazonaws.com/default/elo/retrieveGames${paramsToString(
                 params
             )}`
         ).then((res) => res.json())
+         .then(res => JSON.parse(res.body))
     );
 };
 
 export const useFetchAllStats = () =>
     useQuery<AllStatsResponse>("allStats", () =>
         fetch(
-            `https://yp1eodick8.execute-api.eu-north-1.amazonaws.com/default/retrieveAllStats${paramsToString(
+            `https://t6jhp0e39a.execute-api.eu-west-1.amazonaws.com/default/elo/retrieveAllStats${paramsToString(
                 requestParams
             )}`
         ).then((res) => res.json())
+         .then(res => JSON.parse(res.body))
     );
 
 export const useRegisterUser = (
@@ -74,7 +77,7 @@ export const useRegisterUser = (
     useMutation<IUsersResponse, string, IUserRequest>(
         (user) =>
             fetch(
-                `https://fsjps0x3s4.execute-api.eu-north-1.amazonaws.com/default/registerUser${paramsToString(
+                `https://t6jhp0e39a.execute-api.eu-west-1.amazonaws.com/default/elo/registerUser${paramsToString(
                     requestParams
                 )}`,
                 {
@@ -88,7 +91,8 @@ export const useRegisterUser = (
                         elo: 1000,
                     }),
                 }
-            ).then((res) => res.json()),
+            ).then((res) => res.json())
+             .then(res => JSON.parse(res.body)),
         options
     );
 
@@ -105,9 +109,10 @@ export const useSubmitResult = (
         | undefined
 ) =>
     useMutation<IUpdateResponse, string, ReadonlyArray<IGameRequest>>(
-        (games) =>
-            fetch(
-                `https://7o436x62bh.execute-api.eu-north-1.amazonaws.com/default/updateElo${paramsToString(
+        (games) => {
+            console.log(JSON.stringify(games));
+            return fetch(
+                `https://t6jhp0e39a.execute-api.eu-west-1.amazonaws.com/default/elo/updateElo${paramsToString(
                     requestParams
                 )}`,
                 {
@@ -118,6 +123,8 @@ export const useSubmitResult = (
                     },
                     body: JSON.stringify(games),
                 }
-            ).then((res) => res.json()),
+            ).then((res) => res.json())
+             .then(res => JSON.parse(res.body))
+        },
         options
     );

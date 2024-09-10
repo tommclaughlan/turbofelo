@@ -8,18 +8,18 @@ import {
     useSubmitResult,
 } from "../../services/apiService";
 
-import "./submitScore.css";
+import "./submit1v1Score.css";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
-import { IGameForm, IUser } from "../../services/apiTypes";
+import {I1v1GameForm, IGameForm, IUser} from "../../services/apiTypes";
 
-const gameFormToGameRequest = (game: IGameForm) => ({
+const gameFormToGameRequest = (game: I1v1GameForm) => ({
     teams: [
         {
-            players: [game.teamOnePlayerOne, game.teamOnePlayerTwo],
+            players: [game.teamOnePlayerOne],
             score: game.teamOneScore,
         },
         {
-            players: [game.teamTwoPlayerOne, game.teamTwoPlayerTwo],
+            players: [game.teamTwoPlayerOne],
             score: game.teamTwoScore,
         },
     ],
@@ -29,7 +29,7 @@ interface SubmitScoreProps {
     setShowSubmitScore: (isShown: boolean) => void;
 }
 
-function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
+function Submit1v1Score({ setShowSubmitScore }: SubmitScoreProps) {
     const queryClient = useQueryClient();
 
     const { data: users } = useFetchUsers();
@@ -54,9 +54,7 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
             teamOneScore: 0,
             teamTwoScore: 0,
             teamOnePlayerOne: "",
-            teamOnePlayerTwo: "",
             teamTwoPlayerOne: "",
-            teamTwoPlayerTwo: "",
             score: "",
             players: "",
         },
@@ -70,11 +68,9 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
             }
             const players = new Set([
                 values.teamOnePlayerOne,
-                values.teamOnePlayerTwo,
                 values.teamTwoPlayerOne,
-                values.teamTwoPlayerTwo,
             ]);
-            if (players.size !== 4) {
+            if (players.size !== 2) {
                 errors.players =
                     "All players must be filled in";
             }
@@ -114,7 +110,7 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
                                         className="label"
                                         htmlFor="teamOneScore"
                                     >
-                                        Team One
+                                        Player One
                                     </label>
                                 </div>
                                 <input
@@ -149,7 +145,7 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
                                         className="label has-text-right"
                                         htmlFor="teamTwoScore"
                                     >
-                                        Team Two
+                                        Player Two
                                     </label>
                                 </div>
                             </div>
@@ -179,29 +175,12 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
                                     }}
                                 />
                             </div>
-                            <div className="field">
-                                <Select
-                                    className="player-select"
-                                    placeholder="Player Two"
-                                    classNames={{
-                                        menuPortal: (state) => "select-menu",
-                                    }}
-                                    menuPortalTarget={document.body}
-                                    options={formatOptions(users ?? [])}
-                                    onChange={(selected) => {
-                                        formik.setFieldValue(
-                                            "teamOnePlayerTwo",
-                                            selected?.value
-                                        );
-                                    }}
-                                />
-                            </div>
                         </div>
                         <div className="column has-text-right">
                             <div className="field">
                                 <Select
                                     className="player-select"
-                                    placeholder="Player One"
+                                    placeholder="Player Two"
                                     classNames={{
                                         menuPortal: (state) => "select-menu",
                                     }}
@@ -210,23 +189,6 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
                                     onChange={(selected) => {
                                         formik.setFieldValue(
                                             "teamTwoPlayerOne",
-                                            selected?.value
-                                        );
-                                    }}
-                                />
-                            </div>
-                            <div className="field select-menu">
-                                <Select
-                                    className="player-select"
-                                    placeholder="Player Two"
-                                    classNames={{
-                                        menuPortal: (state) => "select-menu",
-                                    }}
-                                    menuPortalTarget={document.body}
-                                    options={formatOptions(users ?? [])}
-                                    onChange={(selected) => {
-                                        formik.setFieldValue(
-                                            "teamTwoPlayerTwo",
                                             selected?.value
                                         );
                                     }}
@@ -255,4 +217,4 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
     );
 }
 
-export default SubmitScore;
+export default Submit1v1Score;

@@ -12,7 +12,7 @@ export default function FormList({ results }: FormListProps) {
     if (results) {
         let gameIndex = 0;
         while (gameIndex < 6 && gameIndex < results.length) {
-            const isWin = results[gameIndex].myScore === 10;
+            const isWin = results[gameIndex].myScore === 2;
 
             const character = isWin ? "W" : "L";
 
