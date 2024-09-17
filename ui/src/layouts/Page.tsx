@@ -1,9 +1,9 @@
 import React from "react";
-import { QOUTES } from "./constants";
+import { QUOTES } from "./constants";
 
 import "./Page.css";
 
-const randomQoute = QOUTES[Math.floor(Math.random() * QOUTES.length)];
+const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
 
 interface PageProps {
     children?: React.ReactNode;
@@ -14,7 +14,7 @@ function Page({ children }: PageProps) {
         <>
             <div className="hero is-small is-primary">
                 <div className="hero-body has-text-centered">
-                    <p className="title">{randomQoute}</p>
+                    <p className="title">{randomQuote}</p>
                     <p className="subtitle">
                         Puttin' croks in 'oles since 2024
                     </p>
