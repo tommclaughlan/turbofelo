@@ -1,3 +1,15 @@
 .page-body {
     width: 100% !important;
 }
+
+.modal-card {
+    max-width: fit-content;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .modal-card-title, .label {
+        font-size:1em !important;
+        font-weight:500;
+    }
+}

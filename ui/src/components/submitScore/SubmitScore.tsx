@@ -106,8 +106,8 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
             </header>
             <section className="modal-card-body">
                 <form>
-                    <div className="columns">
-                        <div className="column column-score">
+                    <div className="columns is-mobile">
+                        <div className="column is-two-fifths column-score">
                             <div className="field is-grouped">
                                 <div className="team-title">
                                     <label
@@ -132,10 +132,10 @@ function SubmitScore({ setShowSubmitScore }: SubmitScoreProps) {
                         <div className="column column-dash">
                             <p className="has-text-centered">-</p>
                         </div>
-                        <div className="column column-score">
+                        <div className="column is-two-fifths column-score">
                             <div className="field is-grouped">
                                 <input
-                                    className="input  has-text-right"
+                                    className="input has-text-right"
                                     id="teamTwoScore"
                                     name="teamTwoScore"
                                     type="number"

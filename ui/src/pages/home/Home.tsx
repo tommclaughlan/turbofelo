@@ -36,7 +36,7 @@ function Home() {
             </Modal>
             <Page>
                 <div className="section action-buttons">
-                    <div className="columns is-mobile">
+                    <div className="columns">
                         <div className="column is-one-fifth">
                             <div>
                                 <div className="is-flex-direction-column">

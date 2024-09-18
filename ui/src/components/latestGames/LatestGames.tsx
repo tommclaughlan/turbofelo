@@ -32,11 +32,11 @@ const LatestGames = () => {
 
                 return (
                     <div>
-                        <div className="columns">
+                        <div className="columns is-mobile">
                             <div className="column">
                                 {renderPlayers(elem.teams[0])}
                             </div>
-                            <div className="column is-one-fifth">
+                            <div className="column">
                                 {`${elem.score[0]} - ${elem.score[1]}`}
                             </div>
                             <div className="column">
