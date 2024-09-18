@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Run npm install and build
         run: |
+          pwd
+          ls
           cd ui
           npm install
           npm run build
