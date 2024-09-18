@@ -14,6 +14,12 @@ jobs:
           cd ui
           npm install
           npm run build
+      - name: Package for S3
+        run: |
+          mkdir ui/build/turbofelo
+          mv ui/build/*.* ui/build/turbofelo/
+          mv ui/build/static ui/build/turbofelo/
+          mv ui/build/turbofelo/index.html ui/build
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
