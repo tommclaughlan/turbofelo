@@ -21,19 +21,19 @@ const Carousel = ({ items }: CarouselProps) => {
 
     return (
         <div className="carousel">
-            <div className="columns has-text-weight-bold">
-                <div className="column is-one-fifth">
+            <div className="columns is-mobile has-text-weight-bold">
+                <div className="column is-one-fifth is-one-fifth-mobile">
                     <button
-                        className=" button is-danger is-outlined is-rounded "
+                        className="button is-danger is-outlined is-rounded"
                         onClick={handlePrevious}
                     >
                         ⇦
                     </button>
                 </div>
-                <div className="column">{items?.length && items[index]}</div>
-                <div className="column is-one-fifth next-button">
+                <div className="column is-three-fifths-mobile">{items?.length && items[index]}</div>
+                <div className="column is-one-fifth is-one-fifth-mobile next-button">
                     <button
-                        className=" button is-danger is-outlined is-rounded"
+                        className="button is-danger is-outlined is-rounded"
                         onClick={handleNext}
                     >
                         ⇨

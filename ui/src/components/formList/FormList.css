@@ -17,3 +17,19 @@
 .form-result-loss {
     background-color: #d00;
 }
+
+@media only screen and (max-width: 768px) {
+    .form-result {
+        display: inline-block;
+        height: 18px;
+        width: 18px;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 19px !important;
+        margin-right: 2px;
+        color: #fff;
+        font-weight: 500;
+        font-size:0.8em;
+        border-radius: 5px;
+    }
+    }
