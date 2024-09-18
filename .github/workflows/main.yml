@@ -8,6 +8,7 @@ jobs:
     name: Build front-end components
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run npm install and build
         run: |
           pwd
