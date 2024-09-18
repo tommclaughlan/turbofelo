@@ -10,7 +10,7 @@ import {
 
 import "./submit1v1Score.css";
 import LoadingSpinner from "../loadingSpinner/LoadingSpinner";
-import {I1v1GameForm, IGameForm, IUser} from "../../services/apiTypes";
+import {I1v1GameForm, IUser} from "../../services/apiTypes";
 
 const gameFormToGameRequest = (game: I1v1GameForm) => ({
     teams: [
