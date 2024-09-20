@@ -3,7 +3,7 @@ const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
 
 // Replace the following with your Atlas connection string
-const MONGODB_URI = "secret";
+const MONGODB_URI = "%MONGO_SECRET%";
 
 let cachedClient = null;
 let cachedDb = null;
@@ -72,6 +72,10 @@ exports.handler = async (event, context) => {
         const response = {
             statusCode: 404,
             body: JSON.stringify("User not found"),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
         };
 
         await closeConnection();
@@ -102,6 +106,10 @@ exports.handler = async (event, context) => {
     const response = {
         statusCode: 200,
         body: JSON.stringify(games),
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        }
     };
 
     await closeConnection();
