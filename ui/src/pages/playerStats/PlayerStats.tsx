@@ -98,11 +98,19 @@ const GameCard = ({
 };
 
 const renderRecentGames = (games: IGamesResponse, currentPlayer?: string) => {
-  return (
+  return currentPlayer === undefined || games.length === 0 ? (
+    <div>No recent games to show</div>
+  ) : (
     <div className="container">
-      {games.map((game) => (
-        <GameCard game={game} currentPlayer={currentPlayer} key={game._id} />
-      ))}
+      {games
+        .filter(
+          (game) =>
+            game.teams[0].includes(currentPlayer) ||
+            game.teams[1].includes(currentPlayer)
+        )
+        .map((game) => (
+          <GameCard game={game} currentPlayer={currentPlayer} key={game._id} />
+        ))}
     </div>
   );
 };
