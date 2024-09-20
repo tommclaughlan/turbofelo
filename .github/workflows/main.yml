@@ -36,21 +36,49 @@ jobs:
       - name: registerUser install
         run: |
           cd db/registerUser
+          sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
+          zip registerUser.zip *
       - name: retrieveAllStats install
         run: |
           cd db/retrieveAllStats
+          sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
+          zip retrieveAllStats.zip *
       - name: retrieveGames install
         run: |
           cd db/retrieveGames
+          sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
+          zip retrieveGames.zip *
       - name: retrieveUsers install
         run: |
           cd db/retrieveUsers
+          sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
+          zip retrieveUsers.zip *
       - name: updateElo install
         run: |
           cd db/updateElo
+          sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.ts
           npm install
           npm run compile
+      - name: Package updateElo
+        run: |
+          cd db/updateElo
+          cp -r node_modules built
+          cd built
+          zip updateElo.zip *
+      - name: Setup AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Upload lambdas
+        run: |
+          aws lambda update-function-code --function-name updateElo --zip-file fileb://./db/updateElo/built/updateElo.zip
+          aws lambda update-function-code --function-name retrieveAllStats --zip-file fileb://./db/retrieveAllStats/retrieveAllStats.zip
+          aws lambda update-function-code --function-name retrieveGames --zip-file fileb://./db/retrieveGames/retrieveGames.zip
+          aws lambda update-function-code --function-name retrieveUsers --zip-file fileb://./db/retrieveUsers/retrieveUsers.zip
+          aws lambda update-function-code --function-name registerUser --zip-file fileb://./db/registerUser/registerUser.zip
