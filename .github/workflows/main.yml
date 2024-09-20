@@ -77,8 +77,8 @@ jobs:
           aws-region: eu-west-1
       - name: Upload lambdas
         run: |
-          aws lambda update-function-code --function-name updateElo --zip-file fileb://./db/updateElo/built/updateElo.zip
-          aws lambda update-function-code --function-name retrieveAllStats --zip-file fileb://./db/retrieveAllStats/retrieveAllStats.zip
-          aws lambda update-function-code --function-name retrieveGames --zip-file fileb://./db/retrieveGames/retrieveGames.zip
-          aws lambda update-function-code --function-name retrieveUsers --zip-file fileb://./db/retrieveUsers/retrieveUsers.zip
-          aws lambda update-function-code --function-name registerUser --zip-file fileb://./db/registerUser/registerUser.zip
+          aws lambda update-function-code --function-name updateElo --zip-file fileb://./db/updateElo/built/updateElo.zip --publish
+          aws lambda update-function-code --function-name retrieveAllStats --zip-file fileb://./db/retrieveAllStats/retrieveAllStats.zip --publish
+          aws lambda update-function-code --function-name retrieveGames --zip-file fileb://./db/retrieveGames/retrieveGames.zip --publish
+          aws lambda update-function-code --function-name retrieveUsers --zip-file fileb://./db/retrieveUsers/retrieveUsers.zip --publish
+          aws lambda update-function-code --function-name registerUser --zip-file fileb://./db/registerUser/registerUser.zip --publish
