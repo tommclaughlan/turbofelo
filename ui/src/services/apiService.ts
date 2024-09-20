@@ -11,7 +11,7 @@ import {
 const requestParams: string[] = [];
 
 if (process.env.NODE_ENV !== "production") {
-    requestParams.push("test=false");
+    requestParams.push("test=true");
 }
 
 const paramsToString = (params: ReadonlyArray<string>) =>
