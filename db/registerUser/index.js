@@ -2,7 +2,7 @@
 const MongoClient = require("mongodb").MongoClient;
  
 // Replace the following with your Atlas connection string                                                                                                                                        
-const MONGODB_URI = "secret";
+const MONGODB_URI = "%MONGO_SECRET%";
 
 let cachedClient = null;
 let cachedDb = null;
@@ -64,6 +64,10 @@ exports.handler = async (event, context) => {
   const response = {
       statusCode: 200,
       body: JSON.stringify(users),
+      headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+      }
   };
 
   await closeConnection();

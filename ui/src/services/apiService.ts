@@ -34,7 +34,6 @@ export const useFetchUsers = () =>
                 requestParams
             )}`
         ).then((res) => res.json())
-         .then(res => JSON.parse(res.body))
     );
 
 export const useFetchGames = (id?: string) => {
@@ -52,7 +51,6 @@ export const useFetchGames = (id?: string) => {
                 params
             )}`
         ).then((res) => res.json())
-         .then(res => JSON.parse(res.body))
     );
 };
 
@@ -63,7 +61,6 @@ export const useFetchAllStats = () =>
                 requestParams
             )}`
         ).then((res) => res.json())
-         .then(res => JSON.parse(res.body))
     );
 
 export const useRegisterUser = (
@@ -91,8 +88,7 @@ export const useRegisterUser = (
                         elo: 1000,
                     }),
                 }
-            ).then((res) => res.json())
-             .then(res => JSON.parse(res.body)),
+            ).then((res) => res.json()),
         options
     );
 
@@ -110,7 +106,6 @@ export const useSubmitResult = (
 ) =>
     useMutation<IUpdateResponse, string, ReadonlyArray<IGameRequest>>(
         (games) => {
-            console.log(JSON.stringify(games));
             return fetch(
                 `https://t6jhp0e39a.execute-api.eu-west-1.amazonaws.com/default/elo/updateElo${paramsToString(
                     requestParams
@@ -124,7 +119,6 @@ export const useSubmitResult = (
                     body: JSON.stringify(games),
                 }
             ).then((res) => res.json())
-             .then(res => JSON.parse(res.body))
         },
         options
     );

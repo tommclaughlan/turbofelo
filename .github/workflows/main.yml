@@ -5,7 +5,7 @@ on:
 
 jobs:
   build_frontend:
-    name: Build front-end components
+    name: Build and deploy front-end components
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,3 +28,29 @@ jobs:
           aws-region: eu-west-1
       - name: Upload to S3
         run: aws s3 sync ui/build s3://turbofelo --delete
+  build_backend:
+    name: Build and deploy backend Lambda functions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: registerUser install
+        run: |
+          cd db/registerUser
+          npm install
+      - name: retrieveAllStats install
+        run: |
+          cd db/retrieveAllStats
+          npm install
+      - name: retrieveGames install
+        run: |
+          cd db/retrieveGames
+          npm install
+      - name: retrieveUsers install
+        run: |
+          cd db/retrieveUsers
+          npm install
+      - name: updateElo install
+        run: |
+          cd db/updateElo
+          npm install
+          npm run compile
