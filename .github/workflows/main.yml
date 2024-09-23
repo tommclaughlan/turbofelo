@@ -38,25 +38,25 @@ jobs:
           cd db/registerUser
           sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
-          zip registerUser.zip *
+          zip -r registerUser.zip *
       - name: retrieveAllStats install
         run: |
           cd db/retrieveAllStats
           sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
-          zip retrieveAllStats.zip *
+          zip -r retrieveAllStats.zip *
       - name: retrieveGames install
         run: |
           cd db/retrieveGames
           sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
-          zip retrieveGames.zip *
+          zip -r retrieveGames.zip *
       - name: retrieveUsers install
         run: |
           cd db/retrieveUsers
           sed -i 's/%MONGO_SECRET%/${{ secrets.MONGO_SECRET }}/g' index.js
           npm install
-          zip retrieveUsers.zip *
+          zip -r retrieveUsers.zip *
       - name: updateElo install
         run: |
           cd db/updateElo
@@ -68,7 +68,7 @@ jobs:
           cd db/updateElo
           cp -r node_modules built
           cd built
-          zip updateElo.zip *
+          zip -r updateElo.zip *
       - name: Setup AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
