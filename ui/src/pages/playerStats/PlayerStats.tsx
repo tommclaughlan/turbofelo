@@ -26,6 +26,16 @@ const formatDate = (date: string) => new Date(date).toLocaleDateString("en-UK");
 const formatTime = (date: string) =>
   new Date(date).toLocaleTimeString("en-UK").slice(0, 5);
 
+const getEloColor = (eloDiff: string) => {
+  if (eloDiff === "+0") {
+    return "black";
+  }
+  if (eloDiff[0] === "+") {
+    return "green";
+  }
+  return "red";
+};
+
 const PlayerDetail = ({
   label,
   children,
@@ -44,9 +54,13 @@ const PlayerDetail = ({
 const GameCard = ({
   game,
   currentPlayer,
+  elo,
+  eloDiff,
 }: {
   game: IGame;
   currentPlayer?: string;
+  elo: number;
+  eloDiff: string;
 }) => {
   const currentPlayerIndex = [...game.teams[0], ...game.teams[1]].findIndex(
     (username) => username === currentPlayer
@@ -90,27 +104,76 @@ const GameCard = ({
           </div>
         </div>
       </div>
+      <div className="column has-text-centered is-size-4 elo">{elo}</div>
+      <div className="column has-text-centered is-size-4 eloDiff">
+        <span className={getEloColor(eloDiff)}>{eloDiff}</span>
+      </div>
       <div className="column has-text-centered is-size-6 creation-date">
         {`${formatDate(game.creationDate)} - ${formatTime(game.creationDate)}`}
       </div>
     </div>
   );
 };
+export interface IGameStats extends IGame {
+  eloDiff: string;
+}
+
+const processGames = (
+  games: IGamesResponse,
+  currentPlayer: string
+): IGameStats[] => {
+  return games.map((game, index) => {
+    const currentElo = game.newElos[currentPlayer];
+    const previousElo =
+      index < games.length - 1
+        ? games[index + 1].newElos[currentPlayer]
+        : currentElo;
+    const eloDiff = currentElo - previousElo;
+
+    console.log("currentElo: ", currentElo);
+    console.log("previousElo: ", previousElo);
+    console.log("eloDiff: ", eloDiff);
+
+    return {
+      ...game,
+      eloDiff:
+        index === games.length - 1
+          ? "+0"
+          : eloDiff >= 0
+          ? `+${eloDiff}`
+          : `${eloDiff}`,
+    };
+  });
+};
 
 const renderRecentGames = (games: IGamesResponse, currentPlayer?: string) => {
+  let processedGames: IGameStats[] = [];
+  console.log("games: ", games);
+  let filteredGames: any[] = currentPlayer
+    ? games.filter(
+        (game) =>
+          game.teams[0].includes(currentPlayer) ||
+          game.teams[1].includes(currentPlayer)
+      )
+    : [];
+  if (currentPlayer) {
+    processedGames = processGames(filteredGames, currentPlayer);
+  }
+  console.log("processed games:", processedGames);
+
   return currentPlayer === undefined || games.length === 0 ? (
     <div>No recent games to show</div>
   ) : (
     <div className="container">
-      {games
-        .filter(
-          (game) =>
-            game.teams[0].includes(currentPlayer) ||
-            game.teams[1].includes(currentPlayer)
-        )
-        .map((game) => (
-          <GameCard game={game} currentPlayer={currentPlayer} key={game._id} />
-        ))}
+      {processedGames.map((game) => (
+        <GameCard
+          game={game}
+          currentPlayer={currentPlayer}
+          key={game._id}
+          elo={game.newElos[currentPlayer]}
+          eloDiff={game.eloDiff}
+        />
+      ))}
     </div>
   );
 };
