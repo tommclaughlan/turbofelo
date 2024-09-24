@@ -52,6 +52,14 @@
     text-align: right;
 }
 
+.green {
+    color: #44c424;
+}
+
+.red {
+    color: #dd0000;
+}
+
 .team-two {
     justify-content: flex-start;
 }
